@@ -11,17 +11,17 @@ import { Frequency } from "@/models/frequency"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Input } from "../ui/input"
 import type { CalculationInput } from "@/models/calculationInput"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { CalculationContext } from "@/models/calculationContext"
 
 const formSchema = z.object({
-  age: z.int().positive().lte(150),
-  retirementAge: z.int().positive().lte(150),
-  startingAmount: z.number().positive(),
-  target: z.number().positive(),
-  contribution: z.number(),
+  age: z.coerce.number<number>().int().positive().lte(150),
+  retirementAge: z.coerce.number<number>().int().positive().lte(150),
+  startingAmount: z.coerce.number<number>(),
+  target: z.coerce.number<number>().positive(),
+  contribution: z.coerce.number<number>(),
   frequency: z.enum(Frequency),
-  rate: z.number().gte(-100).lte(100),
+  rate: z.coerce.number<number>().gte(-100).lte(100),
 })
 
 export default function Form() {
@@ -34,19 +34,24 @@ export default function Form() {
     defaultValues: calculationInput,
   })
 
+  useEffect(() => {
+    const sub = form.watch(() => form.handleSubmit(onSubmit)())
+    return () => sub.unsubscribe()
+  }, [form])
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const input = values as CalculationInput
 
-    if (
-      values.age != calculationInput.age ||
-      values.retirementAge != calculationInput.retirementAge ||
-      values.startingAmount != calculationInput.startingAmount ||
-      values.target != calculationInput.target ||
-      values.contribution != calculationInput.contribution ||
-      values.frequency != calculationInput.frequency
-    ) {
-      setCalculationInput(input)
-    }
+    // if (
+    //   values.age != calculationInput.age ||
+    //   values.retirementAge != calculationInput.retirementAge ||
+    //   values.startingAmount != calculationInput.startingAmount ||
+    //   values.target != calculationInput.target ||
+    //   values.contribution != calculationInput.contribution ||
+    //   values.frequency != calculationInput.frequency
+    // ) {
+    setCalculationInput(input)
+    // }
   }
 
   return (
@@ -182,7 +187,7 @@ export default function Form() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="rate">Contribution Frequency</FieldLabel>
+                  <FieldLabel htmlFor="rate">Rate</FieldLabel>
                   <Input
                     {...field}
                     id="rate"
