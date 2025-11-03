@@ -1,6 +1,5 @@
 import { useState } from "react"
 import Form from "./components/form/form"
-import Graph from "./components/graph/graph"
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card"
 import {
   CalculationContext,
@@ -13,10 +12,18 @@ function App() {
   const [calculationInput, setCalculationInput] = useState<CalculationInput>(
     defaultCalculationInput
   )
+  const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
+    undefined
+  )
 
   return (
     <CalculationContext.Provider
-      value={{ calculationInput, setCalculationInput }}
+      value={{
+        calculationInput,
+        setCalculationInput,
+        selectedIndex,
+        setSelectedIndex,
+      }}
     >
       <div className="flex justify-center">
         <Card className="m-10">

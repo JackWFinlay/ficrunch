@@ -1,5 +1,5 @@
 import { createContext } from "react"
-import { Frequency } from "./frequency"
+import { Frequency } from "./enums"
 import type { CalculationInput } from "./calculationInput"
 
 export const defaultCalculationInput = {
@@ -15,11 +15,15 @@ export const defaultCalculationInput = {
 export const defaultCalculationContext = {
   calculationInput: defaultCalculationInput,
   setCalculationInput: () => {},
+  selectedIndex: undefined,
+  setSelectedIndex: () => {},
 } as CalculationContextType
 
 export type CalculationContextType = {
   calculationInput: CalculationInput
   setCalculationInput: React.Dispatch<React.SetStateAction<CalculationInput>>
+  selectedIndex: number | undefined
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
 export const CalculationContext = createContext<CalculationContextType>(

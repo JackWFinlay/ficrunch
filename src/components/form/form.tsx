@@ -7,7 +7,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import * as z from "zod"
-import { Frequency } from "@/models/frequency"
+import { Frequency } from "@/models/enums"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Input } from "../ui/input"
 import type { CalculationInput } from "@/models/calculationInput"
