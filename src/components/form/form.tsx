@@ -6,32 +6,57 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
-import * as z from "zod"
+import { z } from "zod"
 import { Frequency } from "@/models/enums"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Input } from "../ui/input"
-import type { CalculationInput } from "@/models/calculationInput"
+import type { CalculationInput, FormInput } from "@/models/calculationInput"
 import { useContext, useEffect } from "react"
 import { CalculationContext } from "@/models/calculationContext"
+import { parseLocaleFloat, toLocaleCurrency } from "@/lib/utils"
 
-const formSchema = z.object({
-  age: z.coerce.number<number>().int().positive().lte(150),
-  retirementAge: z.coerce.number<number>().int().positive().lte(150),
-  startingAmount: z.coerce.number<number>(),
-  target: z.coerce.number<number>().positive(),
-  contribution: z.coerce.number<number>(),
-  frequency: z.enum(Frequency),
-  rate: z.coerce.number<number>().gte(-100).lte(100),
-})
+function mapCalcInput(calculationInput: CalculationInput) {
+  return {
+    ...calculationInput,
+    startingAmount: calculationInput.startingAmount.toString(),
+    contribution: calculationInput.contribution.toString(),
+    target: calculationInput.target.toString(),
+  } as FormInput
+}
+
+function mapFormInput(formInput: FormInput) {
+  return {
+    ...formInput,
+    startingAmount: parseFloat(formInput.startingAmount),
+    contribution: parseFloat(formInput.contribution),
+    target: parseFloat(formInput.target),
+  } as CalculationInput
+}
 
 export default function Form() {
-  const { calculationInput, setCalculationInput } =
+  const { calculationInput, setCalculationInput, locale } =
     useContext(CalculationContext)
+
+  const cleanPositiveNumberSchema = z
+    .string()
+    .transform((val) =>
+      parseFloat(parseLocaleFloat(val, locale).toString()).toString()
+    )
+
+  const formSchema = z.object({
+    age: z.coerce.number<number>().int().positive().lte(150),
+    retirementAge: z.coerce.number<number>().int().positive().lte(150),
+    startingAmount: cleanPositiveNumberSchema,
+    target: cleanPositiveNumberSchema,
+    contribution: cleanPositiveNumberSchema,
+    frequency: z.enum(Frequency),
+    rate: z.coerce.number<number>().gte(-100).lte(100),
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
-    defaultValues: calculationInput,
+    defaultValues: mapCalcInput(calculationInput),
   })
 
   useEffect(() => {
@@ -40,18 +65,8 @@ export default function Form() {
   }, [form])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const input = values as CalculationInput
-
-    // if (
-    //   values.age != calculationInput.age ||
-    //   values.retirementAge != calculationInput.retirementAge ||
-    //   values.startingAmount != calculationInput.startingAmount ||
-    //   values.target != calculationInput.target ||
-    //   values.contribution != calculationInput.contribution ||
-    //   values.frequency != calculationInput.frequency
-    // ) {
+    const input = mapFormInput(values)
     setCalculationInput(input)
-    // }
   }
 
   return (

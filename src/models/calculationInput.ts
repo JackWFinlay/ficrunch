@@ -7,3 +7,13 @@ export type CalculationInput = {
   frequency: string
   rate: number
 }
+
+export type FormInput = {
+  age: number
+  retirementAge: number
+  startingAmount: string
+  target: string
+  contribution: string
+  frequency: string
+  rate: number
+}

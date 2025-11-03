@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, CartesianGrid, XAxis, Bar, YAxis } from "recharts"
 import {
   ChartContainer,
@@ -11,11 +11,13 @@ import {
 import type { ChartData } from "@/models/resultsData"
 import { useContext } from "react"
 import { CalculationContext } from "@/models/calculationContext"
+import { toLocaleCurrency } from "@/lib/utils"
 
 export default function Graph({ chartData }: { chartData: ChartData[] }) {
-  const { selectedIndex } = useContext(CalculationContext)
+  const { selectedIndex, locale } = useContext(CalculationContext)
 
   const chartConfig = {
+    tooltipLabel: { label: "Portfolio Value" },
     interest: {
       label: "Interest",
       color: "var(--chart-2)",
@@ -30,39 +32,33 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
   } satisfies ChartConfig
 
   return (
-    <Card>
+    <Card className="flex">
+      <CardHeader>
+        <CardTitle>Graph</CardTitle>
+      </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
-            <YAxis></YAxis>
+            <YAxis
+              width={90}
+              tickFormatter={(value) => toLocaleCurrency(value, locale)}
+              stroke="var(--foreground)"
+              tick={{ fill: "var(--foreground)" }}
+            />
             <XAxis
               dataKey="year"
               tickLine={false}
               tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value}
+              axisLine={true}
             />
             <ChartTooltip
-              content={
-                <ChartTooltipContent hideLabel cursor={{ fill: "#ff0000" }} />
-              }
-              //cursor={{ fill: "#ff0000" }}
+              content={<ChartTooltipContent labelKey="tooltipLabel" cursor />}
               defaultIndex={selectedIndex}
             />
             <ChartLegend content={<ChartLegendContent />} />
-            <Bar
-              dataKey="contributions"
-              stackId="a"
-              fill="var(--chart-2)"
-              radius={[0, 0, 4, 4]}
-            />
-            <Bar
-              dataKey="interest"
-              stackId="a"
-              fill="var(--chart-1)"
-              radius={[4, 4, 0, 0]}
-            />
+            <Bar dataKey="contributions" stackId="a" fill="var(--chart-2)" />
+            <Bar dataKey="interest" stackId="a" fill="var(--chart-1)" />
           </BarChart>
         </ChartContainer>
       </CardContent>

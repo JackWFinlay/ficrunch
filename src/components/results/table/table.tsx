@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -6,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { toLocaleCurrency } from "@/lib/utils"
 import { CalculationContext } from "@/models/calculationContext"
 import type { TableData } from "@/models/resultsData"
 import { useContext } from "react"
@@ -15,32 +17,44 @@ export default function ResultsTable({
 }: {
   tableData: TableData[]
 }) {
-  const { setSelectedIndex } = useContext(CalculationContext)
+  const { setSelectedIndex, locale } = useContext(CalculationContext)
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Milestone</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Time</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {tableData &&
-          tableData.map((data, index) => (
-            <TableRow
-              key={index}
-              onMouseEnter={() => setSelectedIndex(data.index)}
-              onMouseLeave={() => setSelectedIndex(undefined)}
-            >
-              <TableCell>{data.milestone}</TableCell>
-              <TableCell>{data.amount}</TableCell>
-              <TableCell>{data.time}</TableCell>
+    <Card className="flex">
+      <CardHeader>
+        <CardTitle>Table</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-background">
+              <TableHead>Milestone</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Time</TableHead>
+              <TableHead>Year</TableHead>
             </TableRow>
-          ))}
-        <TableRow></TableRow>
-      </TableBody>
-    </Table>
+          </TableHeader>
+          <TableBody>
+            {tableData &&
+              tableData.map((data, index) => (
+                <TableRow
+                  className="hover:bg-foreground hover:text-background"
+                  key={index}
+                  onMouseEnter={() => setSelectedIndex(data.index)}
+                  onMouseLeave={() => setSelectedIndex(undefined)}
+                >
+                  <TableCell>{data.milestone}</TableCell>
+                  <TableCell>{toLocaleCurrency(data.amount, locale)}</TableCell>
+                  <TableCell>{`~${data.time} year${
+                    data.time % 1 > 0 || data.time > 1 ? "s" : ""
+                  }`}</TableCell>
+                  <TableCell>{data.year}</TableCell>
+                </TableRow>
+              ))}
+            <TableRow></TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   )
 }

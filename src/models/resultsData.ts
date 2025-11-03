@@ -8,6 +8,7 @@ export type ChartData = {
 export type TableData = {
   milestone: string
   time: number
+  year: number
   amount: number
   index: number
 }

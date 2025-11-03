@@ -16,6 +16,8 @@ function App() {
     undefined
   )
 
+  const [locale, setLocale] = useState<string | undefined>(navigator.language)
+
   return (
     <CalculationContext.Provider
       value={{
@@ -23,6 +25,8 @@ function App() {
         setCalculationInput,
         selectedIndex,
         setSelectedIndex,
+        locale,
+        setLocale,
       }}
     >
       <div className="flex justify-center">

@@ -17,6 +17,8 @@ export const defaultCalculationContext = {
   setCalculationInput: () => {},
   selectedIndex: undefined,
   setSelectedIndex: () => {},
+  locale: undefined,
+  setLocale: () => {},
 } as CalculationContextType
 
 export type CalculationContextType = {
@@ -24,6 +26,8 @@ export type CalculationContextType = {
   setCalculationInput: React.Dispatch<React.SetStateAction<CalculationInput>>
   selectedIndex: number | undefined
   setSelectedIndex: React.Dispatch<React.SetStateAction<number | undefined>>
+  locale: string | undefined
+  setLocale: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 export const CalculationContext = createContext<CalculationContextType>(
