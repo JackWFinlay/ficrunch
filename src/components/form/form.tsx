@@ -13,7 +13,7 @@ import { Input } from "../ui/input"
 import type { CalculationInput, FormInput } from "@/models/calculationInput"
 import { useContext, useEffect } from "react"
 import { CalculationContext } from "@/models/calculationContext"
-import { parseLocaleFloat, toLocaleCurrency } from "@/lib/utils"
+import { parseLocaleFloat } from "@/lib/utils"
 
 function mapCalcInput(calculationInput: CalculationInput) {
   return {
@@ -27,9 +27,9 @@ function mapCalcInput(calculationInput: CalculationInput) {
 function mapFormInput(formInput: FormInput) {
   return {
     ...formInput,
-    startingAmount: parseFloat(formInput.startingAmount),
-    contribution: parseFloat(formInput.contribution),
-    target: parseFloat(formInput.target),
+    startingAmount: parseFloat(formInput.startingAmount) ?? 0,
+    contribution: parseFloat(formInput.contribution) ?? 0,
+    target: parseFloat(formInput.target) ?? 0,
   } as CalculationInput
 }
 
@@ -37,11 +37,10 @@ export default function Form() {
   const { calculationInput, setCalculationInput, locale } =
     useContext(CalculationContext)
 
-  const cleanPositiveNumberSchema = z
-    .string()
-    .transform((val) =>
-      parseFloat(parseLocaleFloat(val, locale).toString()).toString()
-    )
+  const cleanPositiveNumberSchema = z.string().transform((val) => {
+    const float = parseFloat(parseLocaleFloat(val, locale).toString())
+    return isNaN(float) ? "0" : float.toString()
+  })
 
   const formSchema = z.object({
     age: z.coerce.number<number>().int().positive().lte(150),

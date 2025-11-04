@@ -46,7 +46,7 @@ export default function ResultsTable({
                   <TableCell>{data.milestone}</TableCell>
                   <TableCell>{toLocaleCurrency(data.amount, locale)}</TableCell>
                   <TableCell>{`~${data.time} year${
-                    data.time % 1 > 0 || data.time > 1 ? "s" : ""
+                    data.time != 1 ? "s" : ""
                   }`}</TableCell>
                   <TableCell>{data.year}</TableCell>
                 </TableRow>

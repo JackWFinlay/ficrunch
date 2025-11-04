@@ -20,14 +20,15 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
     tooltipLabel: { label: "Portfolio Value" },
     interest: {
       label: "Interest",
-      color: "var(--chart-2)",
+      color: "var(--chart-1)",
     },
     contributions: {
       label: "Contributions",
-      color: "var(--chart-1)",
+      color: "var(--chart-2)",
     },
     total: {
       label: "Total",
+      color: "var(--foreground)",
     },
   } satisfies ChartConfig
 
@@ -53,7 +54,43 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
               axisLine={true}
             />
             <ChartTooltip
-              content={<ChartTooltipContent labelKey="tooltipLabel" cursor />}
+              content={
+                <ChartTooltipContent
+                  labelKey="tooltipLabel"
+                  cursor
+                  formatter={(value, name, item, index) => (
+                    <>
+                      <div
+                        className="h-2.5 w-2.5 shrink-0 rounded-[2px] bg-(--color-bg)"
+                        style={
+                          {
+                            "--color-bg": (chartConfig as ChartConfig)[name]
+                              .color,
+                          } as React.CSSProperties
+                        }
+                      />
+                      {chartConfig[name as keyof typeof chartConfig]?.label ||
+                        name}
+                      <div className="ml-auto flex items-baseline gap-0.5 font-medium font-mono text-foreground tabular-nums">
+                        {toLocaleCurrency(value.toString(), locale)}
+                      </div>
+                      {/* Add this after the last item */}
+                      {index === 1 && (
+                        <div className="mt-1.5 flex basis-full items-center border-t pt-1.5 font-medium text-foreground text-xs">
+                          Total
+                          <div className="ml-auto flex items-baseline gap-0.5 font-medium font-mono text-foreground tabular-nums">
+                            {toLocaleCurrency(
+                              item.payload.contributions +
+                                item.payload.interest,
+                              locale
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                />
+              }
               defaultIndex={selectedIndex}
             />
             <ChartLegend content={<ChartLegendContent />} />

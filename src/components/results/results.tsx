@@ -6,6 +6,8 @@ import { useContext } from "react"
 import type { ChartData, TableData } from "@/models/resultsData"
 import ResultsTable from "./table/table"
 
+const round = (val: number) => Math.round(val * 100) / 100
+
 export default function Results() {
   const {
     calculationInput: {
@@ -62,17 +64,15 @@ export default function Results() {
     rate: number,
     contribution: number
   ) =>
-    (startingAmount == 0 ? 1 : startingAmount) *
-      Math.pow(1 + rate / 100 / n, n * (index + 1)) +
+    startingAmount * Math.pow(1 + rate / 100 / n, n * (index + 1)) +
     contribution *
       ((Math.pow(1 + rate / 100 / n, n * (index + 1)) - 1) / (rate / 100 / n))
 
   let aboveContributionsIndex: number | undefined = undefined
   let aboveContributionsValue: number | undefined = undefined
   let aboveContributionsTime: number | undefined = undefined
-  let aboveTargetIndex: number | undefined = undefined
-  let aboveTargetValue: number | undefined = undefined
-  let aboveTargetTime: number | undefined = undefined
+
+  let retirementTotal: number = 0
 
   let totalInterestForYear = 0
 
@@ -82,42 +82,31 @@ export default function Results() {
         totalInterestForYear = 0
       }
 
-      const contributions =
-        Math.round((startingAmount + contribution * (index + 1) * n) * 100) /
-        100
+      const contributions = round(
+        startingAmount + contribution * (index + 1) * n
+      )
 
-      const interest =
-        Math.round(
-          (calculateValue(index, startingAmount, rate, contribution) -
-            contributions) *
-            100
-        ) / 100
+      const interest = round(
+        calculateValue(index, startingAmount, rate, contribution) -
+          contributions
+      )
 
       const total = contributions + interest
 
       totalInterestForYear += interest
 
-      const aboveContributions = totalInterestForYear > contribution
+      const aboveContributions = totalInterestForYear > contribution * n
 
       if (aboveContributions && !aboveContributionsIndex) {
         aboveContributionsIndex = index + 1
         aboveContributionsValue = totalInterestForYear
-        aboveContributionsTime =
-          Math.round(
-            (nper(rate, contribution, total, startingAmount) / n) * 100
-          ) / 100
+        aboveContributionsTime = round(
+          nper(rate, contribution, total, startingAmount) / n
+        )
       }
 
-      const aboveTarget = total > target
-
-      if (aboveTarget && !aboveTargetIndex) {
-        aboveTargetIndex = index + 1
-        aboveTargetValue = target
-        aboveTargetTime =
-          Math.round(
-            (nper(rate, contribution, aboveTargetValue, startingAmount) / n) *
-              100
-          ) / 100
+      if (index >= years - 1) {
+        retirementTotal = total
       }
 
       const result = {
@@ -127,26 +116,51 @@ export default function Results() {
         total,
       } as ChartData
 
-      console.log(result)
-
       return result
     }
   )
 
+  const targetTime = round(nper(rate, contribution, target, startingAmount) / n)
+
+  const halfwayTime = targetTime / 2
+
+  const halfwayValue = round(
+    calculateValue(halfwayTime, startingAmount, rate, contribution)
+  )
+
+  const clampIndex = (index: number) => {
+    const ceil = Math.ceil(index)
+    return ceil > years ? years - 1 : ceil
+  }
+
   const tableData: TableData[] = [
     {
       milestone: Milestone.AboveContributions,
-      index: Math.floor(aboveContributionsIndex ?? 0),
-      year: (aboveContributionsIndex ?? 0) + currentYear - 1,
+      index: clampIndex(aboveContributionsIndex ?? 0),
+      year: (aboveContributionsIndex ?? 0) + currentYear,
       time: aboveContributionsTime ?? 0,
       amount: aboveContributionsValue ?? 0,
     },
     {
+      milestone: Milestone.HalfWayToTarget,
+      index: clampIndex(halfwayTime),
+      year: Math.ceil(halfwayTime) + currentYear,
+      time: round(halfwayTime),
+      amount: halfwayValue,
+    },
+    {
       milestone: Milestone.AboveTarget,
-      index: Math.floor(aboveTargetIndex ?? 0),
-      year: (aboveTargetIndex ?? 0) + currentYear - 1,
-      time: aboveTargetTime ?? 0,
-      amount: aboveTargetValue ?? 0,
+      index: clampIndex(targetTime),
+      year: Math.ceil(targetTime) + currentYear,
+      time: targetTime,
+      amount: target,
+    },
+    {
+      milestone: Milestone.RetirementTotal,
+      index: years - 1,
+      year: years + currentYear - 1,
+      time: years,
+      amount: retirementTotal,
     },
   ]
 

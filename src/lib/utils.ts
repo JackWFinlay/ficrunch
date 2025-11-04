@@ -17,11 +17,13 @@ export function toLocaleCurrency(
   const floatValue = parseLocaleFloat(`${value}`, safeLocale)
   const safeValue = isNaN(floatValue) ? 0 : floatValue
 
-  return safeValue.toLocaleString(safeLocale, {
+  const result = safeValue.toLocaleString(safeLocale, {
     style: "currency",
     currency: getCurrency(safeLocale) ?? undefined,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
   })
+
+  return result
 }
 
 export function parseLocaleFloat(value: string, locale: string | undefined) {
