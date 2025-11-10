@@ -171,6 +171,20 @@ export default function Results() {
       </CardHeader>
       <CardContent className="flex flex-col gap-5">
         <Graph chartData={chartData} />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5032004213694675"
+          crossOrigin="anonymous"
+        ></script>
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-client="ca-pub-5032004213694675"
+          data-ad-slot="1250480448"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         <ResultsTable tableData={tableData} />
       </CardContent>
     </Card>
