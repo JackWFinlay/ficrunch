@@ -6,9 +6,9 @@ export const Frequency = {
 }
 
 export const Milestone = {
-  AboveContributions: "Returns greater than contributions",
+  AboveContributions: "Returns > contributions",
   AboveSalary: "Returns greater than salary",
-  AboveTarget: "Total above target",
+  AboveTarget: "Target",
   HalfWayToTarget: "Half-way to target",
   RetirementTotal: "Retirement",
 }

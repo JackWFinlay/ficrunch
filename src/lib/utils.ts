@@ -7,6 +7,36 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 const defaultLocale = "en-US"
+const suffixArray = ["", "K", "M", "B", "T"]
+
+export function toLocaleCurrencyShort(
+  value: number | string | undefined,
+  locale: string | undefined
+) {
+  const safeLocale = locale ?? defaultLocale
+
+  const floatValue = parseLocaleFloat(`${value}`, safeLocale)
+  const safeValue = isNaN(floatValue) ? 0 : floatValue
+
+  let currentValue = safeValue
+  let magnitude = 0
+
+  while (currentValue / 1000 >= 1) {
+    currentValue /= 1000
+    magnitude++
+    console.log(currentValue)
+  }
+
+  const result = currentValue.toLocaleString(safeLocale, {
+    style: "currency",
+    currency: getCurrency(safeLocale) ?? undefined,
+    maximumFractionDigits: 2,
+  })
+
+  let suffix = suffixArray[magnitude]
+
+  return `${result}${suffix}`
+}
 
 export function toLocaleCurrency(
   value: number | string | undefined,

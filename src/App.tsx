@@ -29,14 +29,14 @@ function App() {
         setLocale,
       }}
     >
-      <div className="flex justify-center">
-        <Card className="m-10">
+      <div className="flex justify-center m-5  w-90 lg:w-full">
+        <Card className="flex">
           <CardHeader>
             <CardTitle>FI Milestones</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-start justify-between">
-              <div className="flex gap-5">
+          <CardContent className="w-90 lg:w-full">
+            <div className="flex flex-col items-start justify-between ">
+              <div className="flex gap-5 flex-wrap">
                 <Form />
                 <Results />
               </div>

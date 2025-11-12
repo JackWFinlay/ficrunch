@@ -1,5 +1,4 @@
 import Graph from "./graph/graph"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { CalculationContext } from "@/models/calculationContext"
 import { Frequency, Milestone } from "@/models/enums"
 import { useContext } from "react"
@@ -120,17 +119,20 @@ export default function Results() {
     }
   )
 
-  const targetTime = round(nper(rate, contribution, target, startingAmount) / n)
+  const targetTime = nper(rate, contribution, target, startingAmount)
 
-  const halfwayTime = targetTime / 2
+  const targetTimeRounded = round(targetTime / n)
+
+  const halfwayTime = targetTime / 2 / n + 1
 
   const halfwayValue = round(
     calculateValue(halfwayTime, startingAmount, rate, contribution)
   )
 
   const clampIndex = (index: number) => {
-    const ceil = Math.ceil(index)
-    return ceil > years ? years - 1 : ceil
+    console.log(`index: ${index}`)
+    const floor = Math.floor(index)
+    return floor > years ? years - 1 : floor
   }
 
   const tableData: TableData[] = [
@@ -144,15 +146,15 @@ export default function Results() {
     {
       milestone: Milestone.HalfWayToTarget,
       index: clampIndex(halfwayTime),
-      year: Math.ceil(halfwayTime) + currentYear,
-      time: round(halfwayTime),
+      year: Math.ceil(halfwayTime) + currentYear - 1,
+      time: round(halfwayTime) - 1,
       amount: halfwayValue,
     },
     {
       milestone: Milestone.AboveTarget,
-      index: clampIndex(targetTime),
-      year: Math.ceil(targetTime) + currentYear,
-      time: targetTime,
+      index: clampIndex(targetTimeRounded),
+      year: Math.ceil(targetTimeRounded) + currentYear - 1,
+      time: targetTimeRounded,
       amount: target,
     },
     {
@@ -165,11 +167,8 @@ export default function Results() {
   ]
 
   return (
-    <Card className="w-230">
-      <CardHeader>
-        <CardTitle>Results</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-5">
+    <div className="w-75 lg:w-180">
+      <div className="flex flex-col gap-5">
         <Graph chartData={chartData} />
         <script
           async
@@ -186,7 +185,7 @@ export default function Results() {
         ></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         <ResultsTable tableData={tableData} />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

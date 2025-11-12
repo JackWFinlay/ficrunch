@@ -75,7 +75,7 @@ export default function Form() {
   }
 
   return (
-    <Card className="w-70">
+    <Card className="w-75">
       <CardHeader>
         <CardTitle>Details</CardTitle>
       </CardHeader>
