@@ -9,12 +9,13 @@ import {
   type ChartConfig,
 } from "../../ui/chart"
 import type { ChartData } from "@/models/resultsData"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { CalculationContext } from "@/models/calculationContext"
 import { toLocaleCurrency, toLocaleCurrencyShort } from "@/lib/utils"
 
 export default function Graph({ chartData }: { chartData: ChartData[] }) {
   const { selectedIndex, locale } = useContext(CalculationContext)
+  const [hoverIndex, setHoverIndex] = useState<number | undefined>(undefined)
 
   const chartConfig = {
     tooltipLabel: { label: "Portfolio Value" },
@@ -32,14 +33,18 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
     },
   } satisfies ChartConfig
 
+  useEffect(() => {
+    setHoverIndex(selectedIndex)
+  }, [selectedIndex, setHoverIndex])
+
   return (
-    <Card className="flex overflow-x-auto">
+    <Card className="flex">
       <CardHeader>
         <CardTitle>Graph</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-center">
-          <ChartContainer config={chartConfig} className="flex h-95">
+        <div className="justify-center overflow-x-auto">
+          <ChartContainer config={chartConfig} className="flex h-100 sm:h-fit">
             <BarChart accessibilityLayer data={chartData}>
               <CartesianGrid vertical={false} />
               <YAxis
@@ -60,40 +65,52 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
                     cursor
                     formatter={(value, name, item, index) => (
                       <>
-                        <div
-                          className="h-2.5 w-2.5 shrink-0 rounded-[2px] bg-(--color-bg)"
-                          style={
-                            {
-                              "--color-bg": (chartConfig as ChartConfig)[name]
-                                .color,
-                            } as React.CSSProperties
-                          }
-                        />
-                        {chartConfig[name as keyof typeof chartConfig]?.label ||
-                          name}
-                        <div className="ml-auto flex items-baseline gap-0.5 font-medium font-mono text-foreground tabular-nums">
-                          {toLocaleCurrency(value.toString(), locale)}
-                        </div>
-                        {/* Add this after the last item */}
-                        {index === 1 && (
-                          <div className="mt-1.5 flex basis-full items-center border-t pt-1.5 font-medium text-foreground text-xs">
-                            Total
-                            <div className="ml-auto flex items-baseline gap-0.5 font-medium font-mono text-foreground tabular-nums">
-                              {toLocaleCurrency(
-                                item.payload.contributions +
-                                  item.payload.interest,
-                                locale
-                              )}
+                        <div className="flex flex-col">
+                          <div className="flex gap-1 items-center">
+                            <div
+                              className="flex h-2.5 w-2.5 shrink-0 rounded-[2px] bg-(--color-bg)"
+                              style={
+                                {
+                                  "--color-bg": (chartConfig as ChartConfig)[
+                                    name
+                                  ].color,
+                                } as React.CSSProperties
+                              }
+                            />
+                            <div className="flex">
+                              {chartConfig[name as keyof typeof chartConfig]
+                                ?.label || name}
                             </div>
                           </div>
-                        )}
+                          <div className="ml-0 flex items-baseline gap-0.5 font-medium font-mono text-foreground tabular-nums">
+                            {toLocaleCurrency(value.toString(), locale)}
+                          </div>
+                          {index === 1 && (
+                            <div className="flex-wrap">
+                              <div className="mt-1.5 flex items-center border-t pt-1.5 font-medium text-foreground text-xs">
+                                Total
+                              </div>
+                              <div className="ml-auto flex font-medium font-mono text-foreground tabular-nums">
+                                {toLocaleCurrency(
+                                  item.payload.contributions +
+                                    item.payload.interest,
+                                  locale
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </>
                     )}
                   />
                 }
-                defaultIndex={selectedIndex}
+                defaultIndex={hoverIndex}
               />
-              <ChartLegend content={<ChartLegendContent />} />
+              <ChartLegend
+                content={
+                  <ChartLegendContent verticalAlign="middle" payload={null} />
+                }
+              ></ChartLegend>
               <Bar dataKey="contributions" stackId="a" fill="var(--chart-2)" />
               <Bar dataKey="interest" stackId="a" fill="var(--chart-1)" />
             </BarChart>

@@ -40,7 +40,9 @@ export default function ResultsTable({
                 <TableRow
                   className="hover:bg-foreground hover:text-background"
                   key={index}
-                  onMouseEnter={() => setSelectedIndex(data.index)}
+                  onMouseEnter={() => {
+                    setSelectedIndex(data.index)
+                  }}
                   onMouseLeave={() => setSelectedIndex(undefined)}
                 >
                   <TableCell>{data.milestone}</TableCell>

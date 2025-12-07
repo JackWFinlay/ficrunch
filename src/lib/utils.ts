@@ -24,7 +24,6 @@ export function toLocaleCurrencyShort(
   while (currentValue / 1000 >= 1) {
     currentValue /= 1000
     magnitude++
-    console.log(currentValue)
   }
 
   const result = currentValue.toLocaleString(safeLocale, {

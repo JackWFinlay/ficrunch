@@ -62,45 +62,63 @@ export default function Results() {
     startingAmount: number,
     rate: number,
     contribution: number
-  ) =>
-    startingAmount * Math.pow(1 + rate / 100 / n, n * (index + 1)) +
-    contribution *
-      ((Math.pow(1 + rate / 100 / n, n * (index + 1)) - 1) / (rate / 100 / n))
+  ) => {
+    const percentage = rate / 100 / n
+    return (
+      startingAmount * Math.pow(1 + percentage, n * (index + 1)) +
+      contribution *
+        ((Math.pow(1 + percentage, n * (index + 1)) - 1) / percentage)
+    )
+  }
 
   let aboveContributionsIndex: number | undefined = undefined
   let aboveContributionsValue: number | undefined = undefined
   let aboveContributionsTime: number | undefined = undefined
+  let returnsGreaterThanLifetimeContributionsIndex: number | undefined =
+    undefined
+  let returnsGreaterThanLifetimeContributionsValue: number | undefined =
+    undefined
+  let returnsGreaterThanLifetimeContributionsTime: number | undefined =
+    undefined
 
-  let retirementTotal: number = 0
-
-  let totalInterestForYear = 0
+  let retirementTotal = 0
+  let totalInterest = 0
 
   let chartData: ChartData[] = Array.from({ length: years }).map(
     (_, index: number) => {
-      if (index % n == 0) {
-        totalInterestForYear = 0
-      }
+      const contributions = startingAmount + contribution * (index + 1) * n
+      console.log(`Contributions: ${contributions}`)
 
-      const contributions = round(
-        startingAmount + contribution * (index + 1) * n
-      )
+      const total = calculateValue(index, startingAmount, rate, contribution)
 
-      const interest = round(
-        calculateValue(index, startingAmount, rate, contribution) -
-          contributions
-      )
+      const interest = total - contributions
 
-      const total = contributions + interest
+      const interestForYear = interest - totalInterest
 
-      totalInterestForYear += interest
+      console.log(`interestForYear: ${interestForYear}`)
 
-      const aboveContributions = totalInterestForYear > contribution * n
+      const aboveContributions = interestForYear > contribution * n
 
       if (aboveContributions && !aboveContributionsIndex) {
-        aboveContributionsIndex = index + 1
-        aboveContributionsValue = totalInterestForYear
+        aboveContributionsIndex = index
+        aboveContributionsValue = total
         aboveContributionsTime = round(
           nper(rate, contribution, total, startingAmount) / n
+        )
+      }
+
+      totalInterest += interestForYear
+      console.log(`totalInterest: ${interestForYear}`)
+      const returnsAboveLifetimeContributions = totalInterest > contributions
+
+      if (
+        returnsAboveLifetimeContributions &&
+        !returnsGreaterThanLifetimeContributionsIndex
+      ) {
+        returnsGreaterThanLifetimeContributionsIndex = index
+        returnsGreaterThanLifetimeContributionsValue = total
+        returnsGreaterThanLifetimeContributionsTime = round(
+          nper(rate, contribution, contributions, startingAmount) / n
         )
       }
 
@@ -123,15 +141,14 @@ export default function Results() {
 
   const targetTimeRounded = round(targetTime / n)
 
-  const halfwayTime = targetTime / 2 / n + 1
+  const halfwayTime = targetTime / 2 / n
 
   const halfwayValue = round(
-    calculateValue(halfwayTime, startingAmount, rate, contribution)
+    calculateValue(halfwayTime - 1, startingAmount, rate, contribution)
   )
 
   const clampIndex = (index: number) => {
-    console.log(`index: ${index}`)
-    const floor = Math.floor(index)
+    const floor = (Math as any).floor(index)
     return floor > years ? years - 1 : floor
   }
 
@@ -144,10 +161,17 @@ export default function Results() {
       amount: aboveContributionsValue ?? 0,
     },
     {
+      milestone: Milestone.AboveLifetimeContributions,
+      index: clampIndex(returnsGreaterThanLifetimeContributionsIndex ?? 0),
+      year: (returnsGreaterThanLifetimeContributionsIndex ?? 0) + currentYear,
+      time: returnsGreaterThanLifetimeContributionsTime ?? 0,
+      amount: returnsGreaterThanLifetimeContributionsValue ?? 0,
+    },
+    {
       milestone: Milestone.HalfWayToTarget,
       index: clampIndex(halfwayTime),
       year: Math.ceil(halfwayTime) + currentYear - 1,
-      time: round(halfwayTime) - 1,
+      time: round(halfwayTime),
       amount: halfwayValue,
     },
     {

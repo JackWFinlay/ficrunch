@@ -5,6 +5,7 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
 } from "@/components/ui/field"
 import { z } from "zod"
 import { Frequency } from "@/models/enums"
@@ -20,6 +21,14 @@ import type { CalculationInput, FormInput } from "@/models/calculationInput"
 import { useContext, useEffect } from "react"
 import { CalculationContext } from "@/models/calculationContext"
 import { parseLocaleFloat } from "@/lib/utils"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
 
 function mapCalcInput(calculationInput: CalculationInput) {
   return {
@@ -86,8 +95,9 @@ export default function Form() {
               name="age"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="age">Current Age</FieldLabel>
+                  <FieldLegend className="mb-1">Your Current Age</FieldLegend>
                   <Input
                     {...field}
                     id="age"
@@ -105,10 +115,13 @@ export default function Form() {
               name="retirementAge"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="retirementAge">
-                    Desired Retirement Age
+                    Retirement Age
                   </FieldLabel>
+                  <FieldLegend className="mb-1">
+                    This is the age that you wish to retire at or by
+                  </FieldLegend>
                   <Input
                     {...field}
                     id="retirementAge"
@@ -126,10 +139,13 @@ export default function Form() {
               name="startingAmount"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="startingAmount">
                     Starting Amount
                   </FieldLabel>
+                  <FieldLegend className="mb-1">
+                    The current amount of your savings and investments
+                  </FieldLegend>
                   <Input
                     {...field}
                     id="startingAmount"
@@ -147,8 +163,11 @@ export default function Form() {
               name="target"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="target">Target Amount</FieldLabel>
+                  <FieldLegend className="mb-1">
+                    How much are you aiming to amass before retirement?
+                  </FieldLegend>
                   <Input
                     {...field}
                     id="target"
@@ -166,8 +185,11 @@ export default function Form() {
               name="contribution"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="contribution">Contribution</FieldLabel>
+                  <FieldLegend className="mb-1">
+                    How much are you investing each period?
+                  </FieldLegend>
                   <Input
                     {...field}
                     id="contribution"
@@ -185,17 +207,33 @@ export default function Form() {
               name="frequency"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="frequency">
                     Contribution Frequency
                   </FieldLabel>
-                  <Input
-                    {...field}
-                    id="frequency"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Monthly"
-                    autoComplete="off"
-                  />
+                  <FieldLegend className="mb-1">
+                    How often will you make investment contributions?
+                  </FieldLegend>
+                  <Select
+                    name={field.name}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger
+                      id="frequency"
+                      aria-invalid={fieldState.invalid}
+                      className="min-w-full"
+                    >
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent position="item-aligned">
+                      {Object.keys(Frequency).map((frequency) => (
+                        <SelectItem key={frequency} value={frequency}>
+                          {frequency}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -206,8 +244,12 @@ export default function Form() {
               name="rate"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
+                <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="rate">Rate</FieldLabel>
+                  <FieldLegend className="mb-1">
+                    What annualised rate do you expect your investments to grow
+                    at?
+                  </FieldLegend>
                   <Input
                     {...field}
                     id="rate"

@@ -35,7 +35,7 @@ function App() {
             <CardTitle>FI Milestones</CardTitle>
           </CardHeader>
           <CardContent className="w-90 lg:w-full">
-            <div className="flex flex-col items-start justify-between ">
+            <div className="flex flex-col items-start justify-between">
               <div className="flex gap-5 flex-wrap">
                 <Form />
                 <Results />
