@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -22,7 +28,8 @@ export default function ResultsTable({
   return (
     <Card className="flex">
       <CardHeader>
-        <CardTitle>Table</CardTitle>
+        <CardTitle>🧭 Milestones</CardTitle>
+        <CardDescription>See what's ahead in your FI journey</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>

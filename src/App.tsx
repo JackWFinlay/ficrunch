@@ -1,6 +1,12 @@
 import { useState } from "react"
 import Form from "./components/form/form"
-import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./components/ui/card"
 import {
   CalculationContext,
   defaultCalculationInput,
@@ -29,12 +35,15 @@ function App() {
         setLocale,
       }}
     >
-      <div className="flex justify-center m-5  w-90 lg:w-full">
+      <div className="flex justify-center m-5 w-90 md:w-full">
         <Card className="flex">
           <CardHeader>
-            <CardTitle>FI Milestones</CardTitle>
+            <CardTitle>🚀 FI Milestones</CardTitle>
+            <CardDescription>
+              Calculate and plan your financial independence goals
+            </CardDescription>
           </CardHeader>
-          <CardContent className="w-90 lg:w-full">
+          <CardContent className="w-90 md:w-full">
             <div className="flex flex-col items-start justify-between">
               <div className="flex gap-5 flex-wrap">
                 <Form />

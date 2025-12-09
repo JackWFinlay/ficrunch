@@ -12,6 +12,7 @@ import { Frequency } from "@/models/enums"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -25,7 +26,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
@@ -57,15 +57,28 @@ export default function Form() {
     return isNaN(float) ? "0" : float.toString()
   })
 
-  const formSchema = z.object({
-    age: z.coerce.number<number>().int().positive().lte(150),
-    retirementAge: z.coerce.number<number>().int().positive().lte(150),
-    startingAmount: cleanPositiveNumberSchema,
-    target: cleanPositiveNumberSchema,
-    contribution: cleanPositiveNumberSchema,
-    frequency: z.enum(Frequency),
-    rate: z.coerce.number<number>().gte(-100).lte(100),
-  })
+  const formSchema = z
+    .object({
+      age: z.coerce.number<number>().int().positive().lte(150),
+      retirementAge: z.coerce.number<number>().int().positive().lte(150),
+      startingAmount: cleanPositiveNumberSchema,
+      target: cleanPositiveNumberSchema,
+      contribution: cleanPositiveNumberSchema,
+      frequency: z.enum(Frequency),
+      rate: z.coerce.number<number>().gte(-100).lte(100),
+    })
+    .transform((arg, ctx) => {
+      if (ctx.value.retirementAge <= ctx.value.age) {
+        ctx.issues.push({
+          message: `Retirement Age must be greater than Current Age of ${ctx.value.age}`,
+          code: "custom",
+          path: ["retirementAge"],
+          input: ctx.value.retirementAge,
+        })
+      }
+
+      return { ...arg }
+    })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -86,7 +99,8 @@ export default function Form() {
   return (
     <Card className="w-75">
       <CardHeader>
-        <CardTitle>Details</CardTitle>
+        <CardTitle>📋 Details</CardTitle>
+        <CardDescription>Tell us about your FI journey</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -104,6 +118,7 @@ export default function Form() {
                     aria-invalid={fieldState.invalid}
                     placeholder="30"
                     autoComplete="off"
+                    className="placeholder:text-placeholder"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -120,7 +135,7 @@ export default function Form() {
                     Retirement Age
                   </FieldLabel>
                   <FieldLegend className="mb-1">
-                    This is the age that you wish to retire at or by
+                    This is the age that you wish to retire by
                   </FieldLegend>
                   <Input
                     {...field}
@@ -128,6 +143,7 @@ export default function Form() {
                     aria-invalid={fieldState.invalid}
                     placeholder="60"
                     autoComplete="off"
+                    className="placeholder:text-placeholder"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -146,13 +162,21 @@ export default function Form() {
                   <FieldLegend className="mb-1">
                     The current amount of your savings and investments
                   </FieldLegend>
-                  <Input
-                    {...field}
-                    id="startingAmount"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="0"
-                    autoComplete="off"
-                  />
+                  <div className="w-full max-w-xs space-y-2">
+                    <div className="flex rounded-md shadow-xs">
+                      <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
+                        $
+                      </span>
+                      <Input
+                        {...field}
+                        id="startingAmount"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="0"
+                        autoComplete="off"
+                        className="-ms-px rounded-l-none shadow-none placeholder:text-placeholder"
+                      />
+                    </div>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -168,13 +192,21 @@ export default function Form() {
                   <FieldLegend className="mb-1">
                     How much are you aiming to amass before retirement?
                   </FieldLegend>
-                  <Input
-                    {...field}
-                    id="target"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="1,000,000"
-                    autoComplete="off"
-                  />
+                  <div className="w-full max-w-xs space-y-2">
+                    <div className="flex rounded-md shadow-xs">
+                      <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
+                        $
+                      </span>
+                      <Input
+                        {...field}
+                        id="target"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="1000000"
+                        autoComplete="off"
+                        className="-ms-px rounded-l-none shadow-none placeholder:text-placeholder"
+                      />
+                    </div>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -190,13 +222,21 @@ export default function Form() {
                   <FieldLegend className="mb-1">
                     How much are you investing each period?
                   </FieldLegend>
-                  <Input
-                    {...field}
-                    id="contribution"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="1,000"
-                    autoComplete="off"
-                  />
+                  <div className="w-full max-w-xs space-y-2">
+                    <div className="flex rounded-md shadow-xs">
+                      <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
+                        $
+                      </span>
+                      <Input
+                        {...field}
+                        id="contribution"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="1000"
+                        autoComplete="off"
+                        className="-ms-px rounded-l-none shadow-none placeholder:text-placeholder"
+                      />
+                    </div>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -250,13 +290,21 @@ export default function Form() {
                     What annualised rate do you expect your investments to grow
                     at?
                   </FieldLegend>
-                  <Input
-                    {...field}
-                    id="rate"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="8%"
-                    autoComplete="off"
-                  />
+                  <div className="w-full max-w-xs space-y-2">
+                    <div className="flex rounded-md shadow-xs">
+                      <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
+                        %
+                      </span>
+                      <Input
+                        {...field}
+                        id="rate"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="8"
+                        autoComplete="off"
+                        className="-ms-px rounded-l-none shadow-none placeholder:text-placeholder"
+                      />
+                    </div>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
