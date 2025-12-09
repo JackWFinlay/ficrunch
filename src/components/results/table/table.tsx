@@ -43,23 +43,27 @@ export default function ResultsTable({
           </TableHeader>
           <TableBody>
             {tableData &&
-              tableData.map((data, index) => (
-                <TableRow
-                  className="hover:bg-foreground hover:text-background"
-                  key={index}
-                  onMouseEnter={() => {
-                    setSelectedIndex(data.index)
-                  }}
-                  onMouseLeave={() => setSelectedIndex(undefined)}
-                >
-                  <TableCell>{data.milestone}</TableCell>
-                  <TableCell>{toLocaleCurrency(data.amount, locale)}</TableCell>
-                  <TableCell>{`~${data.time} year${
-                    data.time != 1 ? "s" : ""
-                  }`}</TableCell>
-                  <TableCell>{data.year}</TableCell>
-                </TableRow>
-              ))}
+              tableData
+                .sort((a, b) => a.time - b.time)
+                .map((data, index) => (
+                  <TableRow
+                    className="hover:bg-foreground hover:text-background"
+                    key={index}
+                    onMouseEnter={() => {
+                      setSelectedIndex(data.index)
+                    }}
+                    onMouseLeave={() => setSelectedIndex(undefined)}
+                  >
+                    <TableCell>{data.milestone}</TableCell>
+                    <TableCell>
+                      {toLocaleCurrency(data.amount, locale)}
+                    </TableCell>
+                    <TableCell>{`~${data.time} year${
+                      data.time != 1 ? "s" : ""
+                    }`}</TableCell>
+                    <TableCell>{data.year}</TableCell>
+                  </TableRow>
+                ))}
             <TableRow></TableRow>
           </TableBody>
         </Table>

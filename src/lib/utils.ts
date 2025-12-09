@@ -201,7 +201,13 @@ export function createTableData(calculationInput: CalculationInput) {
         returnsGreaterThanLifetimeContributionsIndex = index
         returnsGreaterThanLifetimeContributionsValue = total
         returnsGreaterThanLifetimeContributionsTime = round(
-          nper(rate, contribution, contributions, startingAmount, n) / n
+          nper(
+            rate,
+            contribution,
+            contributions * 2 + 0.01,
+            startingAmount,
+            n
+          ) / n
         )
       }
 
