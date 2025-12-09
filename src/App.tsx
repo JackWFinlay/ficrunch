@@ -35,23 +35,25 @@ function App() {
         setLocale,
       }}
     >
-      <div className="flex justify-center m-5 w-90 md:w-full">
-        <Card className="flex">
-          <CardHeader>
-            <CardTitle>🚀 FI Milestones</CardTitle>
-            <CardDescription>
-              Calculate and plan your financial independence goals
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="w-90 md:w-full">
-            <div className="flex flex-col items-start justify-between">
-              <div className="flex gap-5 flex-wrap">
-                <Form />
-                <Results />
+      <div className="flex justify-center w-full mt-5">
+        <div className="flex justify-center w-90 md:w-full">
+          <Card className="flex">
+            <CardHeader>
+              <CardTitle>🚀 FI Milestones</CardTitle>
+              <CardDescription>
+                Calculate and plan your financial independence goals
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="w-90 md:w-full justify-center">
+              <div className="flex flex-col items-start justify-between">
+                <div className="flex gap-5 flex-wrap justify-center">
+                  <Form />
+                  <Results />
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </CalculationContext.Provider>
   )

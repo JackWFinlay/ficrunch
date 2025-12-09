@@ -10,8 +10,8 @@ export default function Results() {
   const { tableData, chartData } = createTableData(calculationInput)
 
   return (
-    <div className="w-75 lg:w-120 xl:w-180">
-      <div className="flex flex-col gap-5">
+    <div className="w-78 lg:w-120 xl:w-180">
+      <div className="flex flex-col gap-2.5">
         <Graph chartData={chartData} />
         <script
           async

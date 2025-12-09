@@ -80,7 +80,10 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
       </CardHeader>
       <CardContent>
         <div className="justify-center overflow-x-auto gap-5">
-          <ChartContainer config={chartConfig} className="flex h-100 sm:h-fit">
+          <ChartContainer
+            config={chartConfig}
+            className="flex h-100 md:h-35 lg:h-60 w-fit"
+          >
             <BarChart
               accessibilityLayer
               data={chartData}
@@ -127,52 +130,52 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
               </Bar>
             </BarChart>
           </ChartContainer>
-          <div className="flex">
-            <Table>
-              <TableHeader>
-                <TableRow className="">
-                  <TableHead>Type</TableHead>
-                  <TableHead className="text-right">Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow className="hover:bg-foreground hover:text-background">
-                  <TableCell>Interest</TableCell>
-                  <TableCell className="text-right">
-                    {selectedIndex
-                      ? toLocaleCurrency(
-                          chartData[selectedIndex].interest,
-                          locale
-                        )
-                      : "-"}
-                  </TableCell>
-                </TableRow>
-                <TableRow className="hover:bg-foreground hover:text-background">
-                  <TableCell>Contributions</TableCell>
-                  <TableCell className="text-right">
-                    {selectedIndex
-                      ? toLocaleCurrency(
-                          chartData[selectedIndex].contributions,
-                          locale
-                        )
-                      : "-"}
-                  </TableCell>
-                </TableRow>
-                <TableRow className="hover:bg-foreground hover:text-background">
-                  <TableCell>Total</TableCell>
-                  <TableCell className="text-right">
-                    {selectedIndex
-                      ? toLocaleCurrency(chartData[selectedIndex].total, locale)
-                      : "-"}
-                  </TableCell>
-                </TableRow>
-                <TableRow className="hover:bg-foreground hover:text-background">
-                  <TableCell>Year</TableCell>
-                  <TableCell className="text-right">{selectedYear}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+        </div>
+        <div className="flex">
+          <Table>
+            <TableHeader>
+              <TableRow className="">
+                <TableHead>Type</TableHead>
+                <TableHead className="text-right">Value</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="hover:bg-foreground hover:text-background">
+                <TableCell>Year</TableCell>
+                <TableCell className="text-right">{selectedYear}</TableCell>
+              </TableRow>
+              <TableRow className="hover:bg-foreground hover:text-background">
+                <TableCell>Interest</TableCell>
+                <TableCell className="text-right">
+                  {selectedIndex
+                    ? toLocaleCurrency(
+                        chartData[selectedIndex].interest,
+                        locale
+                      )
+                    : "-"}
+                </TableCell>
+              </TableRow>
+              <TableRow className="hover:bg-foreground hover:text-background">
+                <TableCell>Contributions</TableCell>
+                <TableCell className="text-right">
+                  {selectedIndex
+                    ? toLocaleCurrency(
+                        chartData[selectedIndex].contributions,
+                        locale
+                      )
+                    : "-"}
+                </TableCell>
+              </TableRow>
+              <TableRow className="hover:bg-foreground hover:text-background">
+                <TableCell>Total</TableCell>
+                <TableCell className="text-right">
+                  {selectedIndex
+                    ? toLocaleCurrency(chartData[selectedIndex].total, locale)
+                    : "-"}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
       </CardContent>
     </Card>

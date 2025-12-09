@@ -97,7 +97,7 @@ export default function Form() {
   }
 
   return (
-    <Card className="w-75">
+    <Card className="w-78">
       <CardHeader>
         <CardTitle>📋 Details</CardTitle>
         <CardDescription>Tell us about your FI journey</CardDescription>
