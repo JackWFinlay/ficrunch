@@ -82,7 +82,7 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
         <div className="justify-center overflow-x-auto gap-5">
           <ChartContainer
             config={chartConfig}
-            className="flex h-100 md:h-35 lg:h-60 w-fit"
+            className="flex h-100 md:h-35 lg:h-60 xl:h-100 w-fit"
           >
             <BarChart
               accessibilityLayer
