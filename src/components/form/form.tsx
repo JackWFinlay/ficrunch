@@ -99,8 +99,10 @@ export default function Form() {
   return (
     <Card className="w-78">
       <CardHeader>
-        <CardTitle>📋 Details</CardTitle>
-        <CardDescription>Tell us about your FI journey</CardDescription>
+        <CardTitle>📋 Plan</CardTitle>
+        <CardDescription className="text-xs text-light">
+          Tell us about your financial independence plan of action
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(onSubmit)}>

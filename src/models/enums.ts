@@ -12,4 +12,5 @@ export const Milestone = {
   AboveTarget: "🎯 Target",
   HalfWayToTarget: "🤏 Half-way to target",
   RetirementTotal: "👴 Retirement",
+  CoastFire: "🏝️ Coast FIRE",
 }

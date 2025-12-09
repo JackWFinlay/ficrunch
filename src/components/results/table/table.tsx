@@ -29,7 +29,9 @@ export default function ResultsTable({
     <Card className="flex">
       <CardHeader>
         <CardTitle>🧭 Milestones</CardTitle>
-        <CardDescription>See what's ahead in your FI journey</CardDescription>
+        <CardDescription className="text-xs text-light">
+          See what's ahead in your financial independence journey
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>

@@ -157,6 +157,10 @@ export function createTableData(calculationInput: CalculationInput) {
 
   const n = getNumberOfPeriods(frequency)
 
+  // let coastFireReachedIndex: number | undefined = undefined
+  // let coastFireReachedValue: number | undefined = undefined
+  // let coastFireReachedTime: number | undefined = undefined
+
   let aboveContributionsIndex: number | undefined = undefined
   let aboveContributionsValue: number | undefined = undefined
   let aboveContributionsTime: number | undefined = undefined
@@ -210,6 +214,23 @@ export function createTableData(calculationInput: CalculationInput) {
           ) / n
         )
       }
+
+      // const yearsToRetirement = years - index
+
+      // if (!coastFireReachedIndex) {
+      //   const coastValue = calculateValue(yearsToRetirement, total, rate, 0, n)
+      //   console.log(`coastValue: ${coastValue}`)
+      //   if (coastValue >= target) {
+      //     coastFireReachedIndex = index
+
+      //     const coastTime = nper(-rate, 0, total, target, n) / n
+
+      //     console.log(`coastTime: ${coastTime}`)
+
+      //     coastFireReachedTime = round(years - coastTime)
+      //     coastFireReachedValue = calculateValue(coastTime, target, -rate, 0, n)
+      //   }
+      // }
 
       if (index >= years - 1) {
         retirementTotal = total
@@ -277,6 +298,13 @@ export function createTableData(calculationInput: CalculationInput) {
       time: years,
       amount: retirementTotal,
     },
+    // {
+    //   milestone: Milestone.CoastFire,
+    //   index: clampIndex(coastFireReachedIndex ?? 0),
+    //   year: Math.ceil(coastFireReachedIndex ?? 0) + currentYear - 1,
+    //   time: coastFireReachedTime ?? 0,
+    //   amount: coastFireReachedValue ?? 0,
+    // },
   ]
 
   return { tableData, chartData }
