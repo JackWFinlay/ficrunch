@@ -18,8 +18,7 @@ import {
   CardTitle,
 } from "../ui/card"
 import { Input } from "../ui/input"
-import type { CalculationInput } from "@/models/calculationInput"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { CalculationContext } from "@/models/calculationContext"
 import {
   calculateValue,
@@ -35,10 +34,8 @@ import {
   SelectValue,
 } from "../ui/select"
 import { getCurrencySymbol, useLocale } from "../locale/locale-provider"
-import { Switch } from "@radix-ui/react-switch"
-import { Label } from "../ui/label"
 import { Button } from "../ui/button"
-import { BadgeDollarSign, Banknote, BanknoteArrowUp } from "lucide-react"
+import { Banknote, BanknoteArrowUp } from "lucide-react"
 
 export default function Form() {
   const { calculationInput, setCalculationInput } =
