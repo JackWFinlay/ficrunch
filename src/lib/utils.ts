@@ -4,23 +4,20 @@ import { twMerge } from "tailwind-merge"
 import { Frequency, Milestone } from "@/models/enums"
 import type { CalculationInput } from "@/models/calculationInput"
 import type { ChartData, TableData } from "@/models/resultsData"
+import { useLocale, type Locale } from "@/components/locale/locale-provider"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+const inflationRate = 3
+
 const round = (val: number) => Math.round(val * 100) / 100
 
-const defaultLocale = "en-US"
 const suffixArray = ["", "K", "M", "B", "T"]
 
-export function toLocaleCurrencyShort(
-  value: number | string | undefined,
-  locale: string | undefined
-) {
-  const safeLocale = locale ?? defaultLocale
-
-  const floatValue = parseLocaleFloat(`${value}`, safeLocale)
+export function toLocaleCurrencyShort(value: number, locale: Locale) {
+  const floatValue = parseFloat(`${value}`)
   const safeValue = isNaN(floatValue) ? 0 : floatValue
 
   let currentValue = safeValue
@@ -31,10 +28,12 @@ export function toLocaleCurrencyShort(
     magnitude++
   }
 
-  const result = currentValue.toLocaleString(safeLocale, {
+  const localeCurrency = getCurrency(locale)
+
+  const result = currentValue.toLocaleString(locale, {
     style: "currency",
-    currency: getCurrency(safeLocale) ?? undefined,
-    maximumFractionDigits: 2,
+    currency: localeCurrency ?? undefined,
+    maximumFractionDigits: 3,
   })
 
   let suffix = suffixArray[magnitude]
@@ -42,29 +41,34 @@ export function toLocaleCurrencyShort(
   return `${result}${suffix}`
 }
 
-export function toLocaleCurrency(
-  value: number | string | undefined,
-  locale: string | undefined
-) {
-  const safeLocale = locale ?? defaultLocale
-
-  const floatValue = parseLocaleFloat(`${value}`, safeLocale)
+export function toLocaleCurrency(value: number, locale: Locale) {
+  const floatValue = parseFloat(`${value}`)
   const safeValue = isNaN(floatValue) ? 0 : floatValue
 
-  const result = safeValue.toLocaleString(safeLocale, {
+  const localeCurrency = getCurrency(locale)
+
+  const result = safeValue.toLocaleString(locale, {
     style: "currency",
-    currency: getCurrency(safeLocale) ?? undefined,
+    currency: localeCurrency ?? undefined,
     maximumFractionDigits: 2,
   })
 
   return result
 }
 
-export function parseLocaleFloat(value: string, locale: string | undefined) {
-  const safeLocale = locale ?? defaultLocale
+export function toLocaleFloat(value: string, locale: Locale) {
+  const float = parseFloat(value)
+  const result = float.toLocaleString(locale, {
+    style: "decimal",
+    maximumFractionDigits: 2,
+  })
 
+  return result
+}
+
+export function parseLocaleFloat(value: string, locale: Locale) {
   // Get the locale-specific decimal and thousands separators
-  const formatter = new Intl.NumberFormat(safeLocale)
+  const formatter = new Intl.NumberFormat(locale)
   const parts = formatter.formatToParts(1234.56) // Use a sample number to extract separators
 
   let decimalSeparator = "."
@@ -80,11 +84,13 @@ export function parseLocaleFloat(value: string, locale: string | undefined) {
   }
 
   // Clean the input string
-  let cleanedString = value.replaceAll(thousandsSeparator, "") // Remove thousands separators
+  let cleanedString = value.toString().replaceAll(thousandsSeparator, "") // Remove thousands separators
   cleanedString = cleanedString.replace(decimalSeparator, ".") // Replace decimal separator with period
 
   // Parse the cleaned string using parseFloat
-  return parseFloat(cleanedString)
+  const float = parseFloat(cleanedString)
+
+  return float
 }
 
 export function getNumberOfPeriods(frequency: string) {
@@ -142,18 +148,20 @@ export function calculateValue(
 }
 
 export function createTableData(calculationInput: CalculationInput) {
-  const {
-    contribution,
-    age,
-    frequency,
-    rate,
-    retirementAge,
-    startingAmount,
-    target,
-  } = calculationInput
+  const { locale } = useLocale()
+  const { age, frequency, retirementAge, inflation } = calculationInput
 
   const currentYear = new Date().getUTCFullYear()
   const years = retirementAge - age
+  const startingAmount = parseLocaleFloat(
+    calculationInput.startingAmount,
+    locale
+  )
+  const contribution = parseLocaleFloat(calculationInput.contribution, locale)
+  const target = parseLocaleFloat(calculationInput.target, locale)
+  let rate = parseLocaleFloat(calculationInput.rate, locale)
+
+  rate = inflation ? rate - inflationRate : rate
 
   const n = getNumberOfPeriods(frequency)
 

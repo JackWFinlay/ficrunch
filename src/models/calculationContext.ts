@@ -4,12 +4,13 @@ import type { CalculationInput } from "./calculationInput"
 
 export const defaultCalculationInput = {
   age: 30,
-  retirementAge: 67,
-  startingAmount: 0,
-  target: 1000000,
-  contribution: 1000,
+  retirementAge: 60,
+  startingAmount: "0",
+  target: "1,000,000",
+  contribution: "1,000",
   frequency: Frequency.Monthly,
-  rate: 8,
+  rate: "8",
+  inflation: true,
 } as CalculationInput
 
 export const defaultCalculationContext = {
@@ -17,8 +18,6 @@ export const defaultCalculationContext = {
   setCalculationInput: () => {},
   selectedIndex: undefined,
   setSelectedIndex: () => {},
-  locale: undefined,
-  setLocale: () => {},
 } as CalculationContextType
 
 export type CalculationContextType = {
@@ -26,8 +25,6 @@ export type CalculationContextType = {
   setCalculationInput: React.Dispatch<React.SetStateAction<CalculationInput>>
   selectedIndex: number | undefined
   setSelectedIndex: React.Dispatch<React.SetStateAction<number | undefined>>
-  locale: string | undefined
-  setLocale: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 export const CalculationContext = createContext<CalculationContextType>(

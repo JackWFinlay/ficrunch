@@ -1,3 +1,4 @@
+import { useLocale } from "@/components/locale/locale-provider"
 import {
   Card,
   CardContent,
@@ -23,7 +24,8 @@ export default function ResultsTable({
 }: {
   tableData: TableData[]
 }) {
-  const { setSelectedIndex, locale } = useContext(CalculationContext)
+  const { setSelectedIndex } = useContext(CalculationContext)
+  const { locale } = useLocale()
 
   return (
     <Card className="flex">

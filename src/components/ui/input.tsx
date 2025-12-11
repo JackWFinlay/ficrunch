@@ -1,6 +1,11 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Minus, Plus } from "lucide-react"
+import type {
+  ControllerFieldState,
+  ControllerRenderProps,
+} from "react-hook-form"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -18,4 +23,52 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   )
 }
 
-export { Input }
+export { Input, FormIntInput }
+
+function FormIntInput({
+  field,
+  fieldState,
+  placeholder,
+  id,
+  minValue = 0,
+  maxValue = 150,
+}: {
+  minValue: number
+  maxValue: number
+  field: ControllerRenderProps<any>
+  fieldState: ControllerFieldState
+  placeholder: string
+  id: string
+}) {
+  const decrement: () => void = () => {
+    if (field.value > minValue) {
+      --field.value
+    }
+  }
+
+  const increment: () => void = () => {
+    if (field.value < maxValue) {
+      ++field.value
+    }
+  }
+
+  return (
+    <div className="w-full max-w-xs space-y-2">
+      <div className="flex rounded-md shadow-xs">
+        <span
+          className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm"
+          onClick={() => decrement()}
+        >
+          <Minus />
+        </span>
+
+        <span
+          className="bg-background border-input text-foreground inline-flex items-center rounded-r-md border px-3 text-sm"
+          onClick={() => increment()}
+        >
+          <Plus />
+        </span>
+      </div>
+    </div>
+  )
+}

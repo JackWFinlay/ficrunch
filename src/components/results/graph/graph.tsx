@@ -24,10 +24,12 @@ import type { ChartData } from "@/models/resultsData"
 import { useContext } from "react"
 import { CalculationContext } from "@/models/calculationContext"
 import { toLocaleCurrencyShort } from "@/lib/utils"
+import { useLocale } from "@/components/locale/locale-provider"
 
 export default function Graph({ chartData }: { chartData: ChartData[] }) {
-  const { selectedIndex, setSelectedIndex, locale } =
-    useContext(CalculationContext)
+  const { selectedIndex, setSelectedIndex } = useContext(CalculationContext)
+
+  const { locale } = useLocale()
 
   // Handler for when mouse moves over a bar (or chart area)
   const handleMouseMove = (e: MouseHandlerDataParam) => {

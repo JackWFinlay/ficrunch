@@ -18,10 +18,15 @@ import {
   CardTitle,
 } from "../ui/card"
 import { Input } from "../ui/input"
-import type { CalculationInput, FormInput } from "@/models/calculationInput"
-import { useContext, useEffect } from "react"
+import type { CalculationInput } from "@/models/calculationInput"
+import { useContext, useEffect, useState } from "react"
 import { CalculationContext } from "@/models/calculationContext"
-import { parseLocaleFloat } from "@/lib/utils"
+import {
+  calculateValue,
+  getNumberOfPeriods,
+  parseLocaleFloat,
+  toLocaleFloat,
+} from "@/lib/utils"
 import {
   Select,
   SelectContent,
@@ -29,43 +34,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-
-function mapCalcInput(calculationInput: CalculationInput) {
-  return {
-    ...calculationInput,
-    startingAmount: calculationInput.startingAmount.toString(),
-    contribution: calculationInput.contribution.toString(),
-    target: calculationInput.target.toString(),
-  } as FormInput
-}
-
-function mapFormInput(formInput: FormInput) {
-  return {
-    ...formInput,
-    startingAmount: parseFloat(formInput.startingAmount) ?? 0,
-    contribution: parseFloat(formInput.contribution) ?? 0,
-    target: parseFloat(formInput.target) ?? 0,
-  } as CalculationInput
-}
+import { getCurrencySymbol, useLocale } from "../locale/locale-provider"
+import { Switch } from "@radix-ui/react-switch"
+import { Label } from "../ui/label"
+import { Button } from "../ui/button"
+import { BadgeDollarSign, Banknote, BanknoteArrowUp } from "lucide-react"
 
 export default function Form() {
-  const { calculationInput, setCalculationInput, locale } =
+  const { calculationInput, setCalculationInput } =
     useContext(CalculationContext)
+  const [formValues, setFormValues] = useState(calculationInput)
 
-  const cleanPositiveNumberSchema = z.string().transform((val) => {
-    const float = parseFloat(parseLocaleFloat(val, locale).toString())
-    return isNaN(float) ? "0" : float.toString()
+  const { locale } = useLocale()
+
+  const cleanNumberSchema = z.string().transform((val) => {
+    const float = parseLocaleFloat(val, locale)
+    return isNaN(float) ? "0" : toLocaleFloat(float.toString(), locale)
   })
 
   const formSchema = z
     .object({
       age: z.coerce.number<number>().int().positive().lte(150),
       retirementAge: z.coerce.number<number>().int().positive().lte(150),
-      startingAmount: cleanPositiveNumberSchema,
-      target: cleanPositiveNumberSchema,
-      contribution: cleanPositiveNumberSchema,
+      startingAmount: cleanNumberSchema,
+      target: cleanNumberSchema,
+      contribution: cleanNumberSchema,
       frequency: z.enum(Frequency),
-      rate: z.coerce.number<number>().gte(-100).lte(100),
+      rate: cleanNumberSchema,
+      inflation: z.boolean(),
     })
     .transform((arg, ctx) => {
       if (ctx.value.retirementAge <= ctx.value.age) {
@@ -79,21 +75,44 @@ export default function Form() {
 
       return { ...arg }
     })
+    .transform((arg, ctx) => {
+      if (
+        calculateValue(
+          arg.retirementAge - arg.age,
+          parseLocaleFloat(arg.startingAmount, locale),
+          arg.inflation
+            ? parseLocaleFloat(arg.rate, locale) - 3
+            : parseLocaleFloat(arg.rate, locale),
+          parseLocaleFloat(arg.contribution, locale),
+          getNumberOfPeriods(arg.frequency)
+        ) < parseLocaleFloat(arg.target, locale)
+      ) {
+        ctx.issues.push({
+          message: `You will not reach your target before your specified retirement age. Adjust either Starting Amount, Contributions, or Retirement Age`,
+          code: "custom",
+          path: ["contribution"],
+          input: ctx.value.retirementAge,
+        })
+      }
 
-  const form = useForm<z.infer<typeof formSchema>>({
+      return { ...arg }
+    })
+
+  const { watch, handleSubmit, register, control } = useForm<
+    z.infer<typeof formSchema>
+  >({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
-    defaultValues: mapCalcInput(calculationInput),
+    defaultValues: calculationInput,
+    values: formValues,
   })
 
-  useEffect(() => {
-    const sub = form.watch(() => form.handleSubmit(onSubmit)())
-    return () => sub.unsubscribe()
-  }, [form])
+  watch(() => handleSubmit(onSubmit)())
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const input = mapFormInput(values)
-    setCalculationInput(input)
+    console.log(values)
+    setCalculationInput(values)
+    setFormValues(values)
   }
 
   return (
@@ -105,22 +124,23 @@ export default function Form() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="age"
-              control={form.control}
+              control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="age">Current Age</FieldLabel>
                   <FieldLegend className="mb-1">Your Current Age</FieldLegend>
                   <Input
+                    {...register("age")}
                     {...field}
                     id="age"
+                    type="number"
                     aria-invalid={fieldState.invalid}
                     placeholder="30"
                     autoComplete="off"
-                    className="placeholder:text-placeholder"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -130,7 +150,7 @@ export default function Form() {
             ></Controller>
             <Controller
               name="retirementAge"
-              control={form.control}
+              control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="retirementAge">
@@ -140,12 +160,12 @@ export default function Form() {
                     This is the age that you wish to retire by
                   </FieldLegend>
                   <Input
+                    {...register("retirementAge")}
                     {...field}
                     id="retirementAge"
                     aria-invalid={fieldState.invalid}
                     placeholder="60"
                     autoComplete="off"
-                    className="placeholder:text-placeholder"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -155,7 +175,7 @@ export default function Form() {
             ></Controller>
             <Controller
               name="startingAmount"
-              control={form.control}
+              control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="startingAmount">
@@ -167,9 +187,10 @@ export default function Form() {
                   <div className="w-full max-w-xs space-y-2">
                     <div className="flex rounded-md shadow-xs">
                       <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
-                        $
+                        {getCurrencySymbol(locale)}
                       </span>
                       <Input
+                        {...register("startingAmount")}
                         {...field}
                         id="startingAmount"
                         aria-invalid={fieldState.invalid}
@@ -187,7 +208,7 @@ export default function Form() {
             ></Controller>
             <Controller
               name="target"
-              control={form.control}
+              control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="target">Target Amount</FieldLabel>
@@ -197,9 +218,10 @@ export default function Form() {
                   <div className="w-full max-w-xs space-y-2">
                     <div className="flex rounded-md shadow-xs">
                       <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
-                        $
+                        {getCurrencySymbol(locale)}
                       </span>
                       <Input
+                        {...register("target")}
                         {...field}
                         id="target"
                         aria-invalid={fieldState.invalid}
@@ -217,7 +239,7 @@ export default function Form() {
             ></Controller>
             <Controller
               name="contribution"
-              control={form.control}
+              control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="contribution">Contribution</FieldLabel>
@@ -227,9 +249,10 @@ export default function Form() {
                   <div className="w-full max-w-xs space-y-2">
                     <div className="flex rounded-md shadow-xs">
                       <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
-                        $
+                        {getCurrencySymbol(locale)}
                       </span>
                       <Input
+                        {...register("contribution")}
                         {...field}
                         id="contribution"
                         aria-invalid={fieldState.invalid}
@@ -247,7 +270,7 @@ export default function Form() {
             ></Controller>
             <Controller
               name="frequency"
-              control={form.control}
+              control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="frequency">
@@ -257,6 +280,7 @@ export default function Form() {
                     How often will you make investment contributions?
                   </FieldLegend>
                   <Select
+                    {...register("frequency")}
                     name={field.name}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -284,7 +308,7 @@ export default function Form() {
             ></Controller>
             <Controller
               name="rate"
-              control={form.control}
+              control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel htmlFor="rate">Rate</FieldLabel>
@@ -298,6 +322,7 @@ export default function Form() {
                         %
                       </span>
                       <Input
+                        {...register("rate")}
                         {...field}
                         id="rate"
                         aria-invalid={fieldState.invalid}
@@ -307,6 +332,44 @@ export default function Form() {
                       />
                     </div>
                   </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            ></Controller>
+            <Controller
+              name="inflation"
+              control={control}
+              render={({ fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-1">
+                  <FieldLabel htmlFor="rate">Today's Value of Money</FieldLabel>
+                  <FieldLegend className="mb-1">
+                    Do you want to apply an inflation value to see results in
+                    today's value of money?
+                  </FieldLegend>
+                  <Button
+                    //className="bg-background text-foreground border-foreground hover:bg-accent"
+                    variant="outline"
+                    onClick={() =>
+                      setFormValues({
+                        ...formValues,
+                        inflation: !formValues.inflation,
+                      })
+                    }
+                  >
+                    {formValues.inflation ? (
+                      <>
+                        <BanknoteArrowUp />{" "}
+                        {`Today's ${getCurrencySymbol(locale)}`}
+                      </>
+                    ) : (
+                      <>
+                        <Banknote /> {`Future ${getCurrencySymbol(locale)}`}
+                      </>
+                    )}
+                  </Button>
+
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}

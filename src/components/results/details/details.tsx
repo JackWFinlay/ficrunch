@@ -17,25 +17,30 @@ import {
   TableCell,
 } from "@/components/ui/table"
 import { toLocaleCurrency } from "@/lib/utils"
+import { useLocale } from "@/components/locale/locale-provider"
 
 const currentYear = new Date().getUTCFullYear()
 
 export default function Details({ chartData }: { chartData: ChartData[] }) {
-  const { selectedIndex, locale } = useContext(CalculationContext)
+  const { selectedIndex } = useContext(CalculationContext)
+  const { locale } = useLocale()
 
   const selectedYear: string = selectedIndex
     ? (
         parseInt(currentYear.toString(), 10) +
         parseInt(selectedIndex.toString(), 10)
       ).toString()
-    : "-"
+    : (
+        parseInt(currentYear.toString(), 10) +
+        parseInt((chartData.length - 1).toString(), 10)
+      ).toString()
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>🔍 Details</CardTitle>
         <CardDescription className="flex text-xs text-light">
-          Hover over the chart to see the finer details
+          Hover over or tap the chart to see the finer details
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -56,7 +61,10 @@ export default function Details({ chartData }: { chartData: ChartData[] }) {
               <TableCell className="text-right">
                 {selectedIndex
                   ? toLocaleCurrency(chartData[selectedIndex].interest, locale)
-                  : "-"}
+                  : toLocaleCurrency(
+                      chartData[chartData.length - 1].interest,
+                      locale
+                    )}
               </TableCell>
             </TableRow>
             <TableRow className="hover:bg-foreground hover:text-background">
@@ -67,7 +75,10 @@ export default function Details({ chartData }: { chartData: ChartData[] }) {
                       chartData[selectedIndex].contributions,
                       locale
                     )
-                  : "-"}
+                  : toLocaleCurrency(
+                      chartData[chartData.length - 1].contributions,
+                      locale
+                    )}
               </TableCell>
             </TableRow>
             <TableRow className="hover:bg-foreground hover:text-background">
@@ -75,7 +86,10 @@ export default function Details({ chartData }: { chartData: ChartData[] }) {
               <TableCell className="text-right">
                 {selectedIndex
                   ? toLocaleCurrency(chartData[selectedIndex].total, locale)
-                  : "-"}
+                  : toLocaleCurrency(
+                      chartData[chartData.length - 1].total,
+                      locale
+                    )}
               </TableCell>
             </TableRow>
           </TableBody>
