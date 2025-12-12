@@ -32,21 +32,23 @@ export default function ModeToggle() {
         id="theme"
         aria-label="Toggle theme"
         onClick={() => setTheme(themeList.next().value as Theme)}
+        className="w-15 md:w-22"
       >
         <div className="flex items-center gap-2">
           {theme === "system" ? (
             <>
-              <SunMoon /> Auto
+              <SunMoon />
+              <p className="hidden md:flex">Auto</p>
             </>
           ) : theme === "light" ? (
             <>
               <Sun />
-              Light
+              <p className="hidden md:flex">Light</p>
             </>
           ) : (
             <>
               <Moon />
-              Dark
+              <p className="hidden md:flex">Dark</p>
             </>
           )}
         </div>

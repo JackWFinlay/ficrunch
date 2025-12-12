@@ -44,12 +44,14 @@ function App() {
                 <Card className="flex">
                   <CardHeader className="gap-0">
                     <div className="flex justify-between">
-                      <div className="flex flex-row gap-2.5 items-center">
-                        <img
-                          src="/logo.svg"
-                          alt="fi-milestones logo"
-                          className="h-9 flex"
-                        />
+                      <div className="flex flex-row gap-0 md:gap-2.5 items-center">
+                        <div className="hidden md:flex">
+                          <img
+                            src="/logo.svg"
+                            alt="fi-milestones logo"
+                            className="h-0 md:h-9"
+                          />
+                        </div>
                         <div className="flex flex-col gap-2">
                           <CardTitle>
                             Financial Independence Milestones
@@ -59,7 +61,7 @@ function App() {
                           </CardDescription>
                         </div>
                       </div>
-                      <div className="flex gap-2.5">
+                      <div className="flex gap-2.5 flex-col md:flex-row">
                         <ModeToggle />
                         <LocalePicker />
                       </div>

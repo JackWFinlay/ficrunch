@@ -17,17 +17,17 @@ export default function LocalePicker() {
   const { locale, setLocale } = useLocale()
 
   return (
-    <div className="flex items-center w-15">
+    <div className="flex items-center">
       <Select
         value={locale}
         onValueChange={(value: Locale) => {
           setLocale(value)
         }}
       >
-        <SelectTrigger id="locale">
+        <SelectTrigger id="locale" className="w-15">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent className="w-15 min-w-0" position="item-aligned">
+        <SelectContent className="min-w-15" position="item-aligned">
           {locales.map(({ localeName, localeSymbol }) => (
             <SelectItem key={localeName} value={localeName}>
               {localeSymbol}
