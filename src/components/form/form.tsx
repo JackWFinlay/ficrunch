@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "../ui/card"
 import { Input } from "../ui/input"
-import { useContext, useState } from "react"
+import { useContext, useState, type MouseEventHandler } from "react"
 import { CalculationContext } from "@/models/calculationContext"
 import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
@@ -69,7 +69,7 @@ export default function Form() {
       return { ...arg }
     })
 
-  const { handleSubmit, register, control } = useForm<
+  const { handleSubmit, register, control, setValue } = useForm<
     z.infer<typeof formSchema>
   >({
     resolver: zodResolver(formSchema),
@@ -81,6 +81,11 @@ export default function Form() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setCalculationInput(values)
     setFormValues(values)
+  }
+
+  const handleInflationButtonClick = () => {
+    setValue("inflation", !formValues.inflation)
+    handleSubmit(onSubmit)()
   }
 
   return (
@@ -331,12 +336,7 @@ export default function Form() {
                   <Button
                     variant="outline"
                     type="button"
-                    onClick={() => {
-                      setFormValues({
-                        ...formValues,
-                        inflation: !formValues.inflation,
-                      })
-                    }}
+                    onClick={handleInflationButtonClick}
                   >
                     {formValues.inflation ? (
                       <>
@@ -349,7 +349,6 @@ export default function Form() {
                       </>
                     )}
                   </Button>
-
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
