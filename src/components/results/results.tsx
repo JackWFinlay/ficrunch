@@ -2,17 +2,21 @@ import Graph from "./graph/graph"
 import { CalculationContext } from "@/models/calculationContext"
 import { useContext } from "react"
 import ResultsTable from "./table/table"
-import { createTableData } from "@/lib/utils"
+import { createTableData, parseLocaleFloat } from "@/lib/utils"
 import Details from "./details/details"
+import Warning from "../warning/warning"
+import { useLocale } from "../locale/locale-provider"
 
 export default function Results() {
   const { calculationInput } = useContext(CalculationContext)
-
+  const { locale } = useLocale()
   const { tableData, chartData } = createTableData(calculationInput)
 
   return (
     <div className="w-78 lg:w-120 xl:w-180">
       <div className="flex flex-col gap-2.5">
+        {chartData[chartData.length - 1].total <
+          parseLocaleFloat(calculationInput.target, locale) && <Warning />}
         <Graph chartData={chartData} />
         <script
           async

@@ -5,12 +5,11 @@ import { Frequency, Milestone } from "@/models/enums"
 import type { CalculationInput } from "@/models/calculationInput"
 import type { ChartData, TableData } from "@/models/resultsData"
 import { useLocale, type Locale } from "@/components/locale/locale-provider"
+import Warning from "@/components/warning/warning"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-
-const inflationRate = 3
 
 const round = (val: number) => Math.round(val * 100) / 100
 
@@ -159,6 +158,10 @@ export function createTableData(calculationInput: CalculationInput) {
   )
   const contribution = parseLocaleFloat(calculationInput.contribution, locale)
   const target = parseLocaleFloat(calculationInput.target, locale)
+  const inflationRate = parseLocaleFloat(
+    calculationInput.inflationRate ?? 0,
+    locale
+  )
   let rate = parseLocaleFloat(calculationInput.rate, locale)
 
   rate = inflation ? rate - inflationRate : rate

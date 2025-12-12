@@ -1,11 +1,6 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import { Minus, Plus } from "lucide-react"
-import type {
-  ControllerFieldState,
-  ControllerRenderProps,
-} from "react-hook-form"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (

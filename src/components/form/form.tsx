@@ -20,12 +20,7 @@ import {
 import { Input } from "../ui/input"
 import { useContext, useState } from "react"
 import { CalculationContext } from "@/models/calculationContext"
-import {
-  calculateValue,
-  getNumberOfPeriods,
-  parseLocaleFloat,
-  toLocaleFloat,
-} from "@/lib/utils"
+import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
   Select,
   SelectContent,
@@ -59,6 +54,7 @@ export default function Form() {
       frequency: z.enum(Frequency),
       rate: cleanNumberSchema,
       inflation: z.boolean(),
+      inflationRate: cleanNumberSchema,
     })
     .transform((arg, ctx) => {
       if (ctx.value.retirementAge <= ctx.value.age) {
@@ -72,30 +68,8 @@ export default function Form() {
 
       return { ...arg }
     })
-    .transform((arg, ctx) => {
-      if (
-        calculateValue(
-          arg.retirementAge - arg.age,
-          parseLocaleFloat(arg.startingAmount, locale),
-          arg.inflation
-            ? parseLocaleFloat(arg.rate, locale) - 3
-            : parseLocaleFloat(arg.rate, locale),
-          parseLocaleFloat(arg.contribution, locale),
-          getNumberOfPeriods(arg.frequency)
-        ) < parseLocaleFloat(arg.target, locale)
-      ) {
-        ctx.issues.push({
-          message: `You will not reach your target before your specified retirement age. Adjust either Starting Amount, Contributions, or Retirement Age`,
-          code: "custom",
-          path: ["contribution"],
-          input: ctx.value.retirementAge,
-        })
-      }
 
-      return { ...arg }
-    })
-
-  const { watch, handleSubmit, register, control } = useForm<
+  const { handleSubmit, register, control } = useForm<
     z.infer<typeof formSchema>
   >({
     resolver: zodResolver(formSchema),
@@ -104,10 +78,7 @@ export default function Form() {
     values: formValues,
   })
 
-  watch(() => handleSubmit(onSubmit)())
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     setCalculationInput(values)
     setFormValues(values)
   }
@@ -131,7 +102,7 @@ export default function Form() {
                   <FieldLabel htmlFor="age">Current Age</FieldLabel>
                   <FieldLegend className="mb-1">Your Current Age</FieldLegend>
                   <Input
-                    {...register("age")}
+                    {...register("age", { onBlur: handleSubmit(onSubmit) })}
                     {...field}
                     id="age"
                     type="number"
@@ -157,7 +128,9 @@ export default function Form() {
                     This is the age that you wish to retire by
                   </FieldLegend>
                   <Input
-                    {...register("retirementAge")}
+                    {...register("retirementAge", {
+                      onBlur: handleSubmit(onSubmit),
+                    })}
                     {...field}
                     id="retirementAge"
                     aria-invalid={fieldState.invalid}
@@ -187,7 +160,9 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("startingAmount")}
+                        {...register("startingAmount", {
+                          onBlur: handleSubmit(onSubmit),
+                        })}
                         {...field}
                         id="startingAmount"
                         aria-invalid={fieldState.invalid}
@@ -218,7 +193,9 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("target")}
+                        {...register("target", {
+                          onBlur: handleSubmit(onSubmit),
+                        })}
                         {...field}
                         id="target"
                         aria-invalid={fieldState.invalid}
@@ -249,7 +226,9 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("contribution")}
+                        {...register("contribution", {
+                          onBlur: handleSubmit(onSubmit),
+                        })}
                         {...field}
                         id="contribution"
                         aria-invalid={fieldState.invalid}
@@ -277,7 +256,9 @@ export default function Form() {
                     How often will you make investment contributions?
                   </FieldLegend>
                   <Select
-                    {...register("frequency")}
+                    {...register("frequency", {
+                      onBlur: handleSubmit(onSubmit),
+                    })}
                     name={field.name}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -319,7 +300,9 @@ export default function Form() {
                         %
                       </span>
                       <Input
-                        {...register("rate")}
+                        {...register("rate", {
+                          onBlur: handleSubmit(onSubmit),
+                        })}
                         {...field}
                         id="rate"
                         aria-invalid={fieldState.invalid}
@@ -367,6 +350,40 @@ export default function Form() {
                     )}
                   </Button>
 
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            ></Controller>
+            <Controller
+              disabled={!formValues.inflation}
+              name="inflationRate"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-1">
+                  <FieldLabel htmlFor="rate">Inflation Rate</FieldLabel>
+                  <FieldLegend className="mb-1">
+                    What value do you want to use for average inflation?
+                  </FieldLegend>
+                  <div className="w-full max-w-xs space-y-2">
+                    <div className="flex rounded-md shadow-xs">
+                      <span className="bg-background border-input text-foreground inline-flex items-center rounded-l-md border px-3 text-sm">
+                        %
+                      </span>
+                      <Input
+                        {...register("inflationRate", {
+                          onBlur: handleSubmit(onSubmit),
+                        })}
+                        {...field}
+                        id="inflationRate"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="3"
+                        autoComplete="off"
+                        className="-ms-px rounded-l-none shadow-none placeholder:text-placeholder"
+                      />
+                    </div>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}

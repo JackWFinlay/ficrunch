@@ -16,7 +16,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table"
-import { toLocaleCurrency } from "@/lib/utils"
+import { calculateValue, toLocaleCurrency } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
 
 const currentYear = new Date().getUTCFullYear()

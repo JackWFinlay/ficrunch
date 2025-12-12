@@ -7,4 +7,5 @@ export type CalculationInput = {
   frequency: string
   rate: string
   inflation: boolean
+  inflationRate: string
 }

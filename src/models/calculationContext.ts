@@ -11,6 +11,7 @@ export const defaultCalculationInput = {
   frequency: Frequency.Monthly,
   rate: "8",
   inflation: true,
+  inflationRate: "3",
 } as CalculationInput
 
 export const defaultCalculationContext = {
