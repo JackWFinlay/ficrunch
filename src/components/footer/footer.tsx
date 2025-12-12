@@ -30,7 +30,14 @@ export default function Footer() {
         </div>
         <div className="flex justify-center">
           <p className="font-light text-center text-sm text-foreground">
-            Or you could...
+            Or you could{" "}
+            <a
+              href="https://www.buymeacoffee.com/littlejackcoder"
+              target="_blank"
+              className="font-bold underline hover:opacity-50"
+            >
+              buy me a coffee...
+            </a>
           </p>
         </div>
         <div className="flex justify-center">
