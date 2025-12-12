@@ -329,14 +329,14 @@ export default function Form() {
                     today's value of money?
                   </FieldLegend>
                   <Button
-                    //className="bg-background text-foreground border-foreground hover:bg-accent"
                     variant="outline"
-                    onClick={() =>
+                    type="button"
+                    onClick={() => {
                       setFormValues({
                         ...formValues,
                         inflation: !formValues.inflation,
                       })
-                    }
+                    }}
                   >
                     {formValues.inflation ? (
                       <>
