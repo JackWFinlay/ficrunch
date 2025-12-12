@@ -34,13 +34,17 @@ export default function Footer() {
           </p>
         </div>
         <div className="flex justify-center">
-          <a
-            href="https://www.buymeacoffee.com/littlejackcoder"
-            target="_blank"
-            className="flex"
-          >
-            <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=littlejackcoder&button_colour=000000&font_colour=ffffff&font_family=Arial&outline_colour=ffffff&coffee_colour=FFDD00" />
-          </a>
+          <div className="flex border-accent border rounded-md shadow-sm">
+            <a
+              href="https://www.buymeacoffee.com/littlejackcoder"
+              target="_blank"
+            >
+              <img
+                src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=littlejackcoder&button_colour=171717&font_colour=ffffff&font_family=Arial&outline_colour=ffffff&coffee_colour=FFDD00"
+                alt="buymeacoffee.com link"
+              />
+            </a>
+          </div>
         </div>
         <div className="flex justify-center">
           <p className="text-center text-xs text-foreground">

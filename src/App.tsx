@@ -49,7 +49,7 @@ function App() {
                           <img
                             src="/logo.svg"
                             alt="fi-milestones logo"
-                            className="h-0 md:h-9"
+                            className="h-9"
                           />
                         </div>
                         <div className="flex flex-col gap-2">
