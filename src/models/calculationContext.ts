@@ -4,7 +4,7 @@ import type { CalculationInput } from "./calculationInput"
 
 export const defaultCalculationInput = {
   age: 30,
-  retirementAge: 60,
+  retirementAge: 65,
   startingAmount: "0",
   target: "1,000,000",
   contribution: "1,000",

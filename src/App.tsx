@@ -42,15 +42,22 @@ function App() {
             <div className="flex justify-center w-full mt-5">
               <div className="flex justify-center w-90 md:w-full">
                 <Card className="flex">
-                  <CardHeader>
+                  <CardHeader className="gap-0">
                     <div className="flex justify-between">
-                      <div className="flex flex-col gap-2">
-                        <CardTitle>
-                          🚀 Financial Independence Milestones
-                        </CardTitle>
-                        <CardDescription className="text-xs text-light">
-                          Calculate and plan your financial independence goals
-                        </CardDescription>
+                      <div className="flex flex-row gap-2.5 items-center">
+                        <img
+                          src="/logo.svg"
+                          alt="fi-milestones logo"
+                          className="h-9 flex"
+                        />
+                        <div className="flex flex-col gap-2">
+                          <CardTitle>
+                            Financial Independence Milestones
+                          </CardTitle>
+                          <CardDescription className="text-xs text-light">
+                            Calculate and plan your financial independence goals
+                          </CardDescription>
+                        </div>
                       </div>
                       <div className="flex gap-2.5">
                         <ModeToggle />

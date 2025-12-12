@@ -5,7 +5,6 @@ import { Frequency, Milestone } from "@/models/enums"
 import type { CalculationInput } from "@/models/calculationInput"
 import type { ChartData, TableData } from "@/models/resultsData"
 import { useLocale, type Locale } from "@/components/locale/locale-provider"
-import Warning from "@/components/warning/warning"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
