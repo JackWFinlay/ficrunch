@@ -392,23 +392,7 @@ export default function Form() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5032004213694675"
-          crossOrigin="anonymous"
-        ></script>
-
-        <ins
-          className="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-client="ca-pub-5032004213694675"
-          data-ad-slot="1633623826"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      </CardFooter>
+      <CardFooter></CardFooter>
     </Card>
   )
 }

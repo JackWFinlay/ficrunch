@@ -16,7 +16,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table"
-import { calculateValue, toLocaleCurrency } from "@/lib/utils"
+import { toLocaleCurrency } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
 
 const currentYear = new Date().getUTCFullYear()
@@ -52,12 +52,12 @@ export default function Details({ chartData }: { chartData: ChartData[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow className="hover:bg-foreground hover:text-background">
-              <TableCell>Year</TableCell>
+            <TableRow className="hover:bg-foreground! hover:text-background bg-accent">
+              <TableCell>🗓️ Year</TableCell>
               <TableCell className="text-right">{selectedYear}</TableCell>
             </TableRow>
-            <TableRow className="hover:bg-foreground hover:text-background">
-              <TableCell>Interest</TableCell>
+            <TableRow className="hover:bg-foreground! hover:text-background">
+              <TableCell>💸 Interest</TableCell>
               <TableCell className="text-right">
                 {selectedIndex
                   ? toLocaleCurrency(chartData[selectedIndex].interest, locale)
@@ -67,8 +67,8 @@ export default function Details({ chartData }: { chartData: ChartData[] }) {
                     )}
               </TableCell>
             </TableRow>
-            <TableRow className="hover:bg-foreground hover:text-background">
-              <TableCell>Contributions</TableCell>
+            <TableRow className="hover:bg-foreground! hover:text-background bg-accent">
+              <TableCell>💰 Contributions</TableCell>
               <TableCell className="text-right">
                 {selectedIndex
                   ? toLocaleCurrency(
@@ -81,8 +81,8 @@ export default function Details({ chartData }: { chartData: ChartData[] }) {
                     )}
               </TableCell>
             </TableRow>
-            <TableRow className="hover:bg-foreground hover:text-background">
-              <TableCell>Total</TableCell>
+            <TableRow className="hover:bg-foreground! hover:text-background">
+              <TableCell>🧮 Total</TableCell>
               <TableCell className="text-right">
                 {selectedIndex
                   ? toLocaleCurrency(chartData[selectedIndex].total, locale)

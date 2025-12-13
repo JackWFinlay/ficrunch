@@ -31,7 +31,7 @@ export function toLocaleCurrencyShort(value: number, locale: Locale) {
   const result = currentValue.toLocaleString(locale, {
     style: "currency",
     currency: localeCurrency ?? undefined,
-    maximumFractionDigits: 3,
+    maximumFractionDigits: 0,
   })
 
   let suffix = suffixArray[magnitude]

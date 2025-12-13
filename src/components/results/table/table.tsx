@@ -38,7 +38,7 @@ export default function ResultsTable({
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-background">
+            <TableRow>
               <TableHead>Milestone</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Time</TableHead>
@@ -51,12 +51,16 @@ export default function ResultsTable({
                 .sort((a, b) => a.time - b.time)
                 .map((data, index) => (
                   <TableRow
-                    className="hover:bg-foreground hover:text-background"
+                    className="hover:bg-foreground! hover:text-background"
                     key={index}
                     onMouseEnter={() => {
                       setSelectedIndex(data.index)
                     }}
                     onMouseLeave={() => setSelectedIndex(undefined)}
+                    style={{
+                      background:
+                        index % 2 === 0 ? "var(--accent)" : "var(--background)",
+                    }}
                   >
                     <TableCell>{data.milestone}</TableCell>
                     <TableCell>
