@@ -13,7 +13,7 @@ export default function Results() {
 
   return (
     <div className="w-78 lg:w-120 xl:w-180">
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-6">
         {chartData[chartData.length - 1].total <
           parseLocaleFloat(calculationInput.target, locale) && <Warning />}
         <ResultsTable tableData={tableData} />

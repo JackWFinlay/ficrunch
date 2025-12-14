@@ -6,11 +6,11 @@ export const Frequency = {
 }
 
 export const Milestone = {
-  AboveContributions: "📈 Interest earned > contributions per year",
+  AboveContributions: "📈 Annual Return > Annual Contributions",
   AboveSalary: "Returns per year greater than salary",
-  AboveLifetimeContributions: "💸 Total interest > total contributions",
+  AboveLifetimeContributions: "💸 Total Return > Total Contributions",
   AboveTarget: "🎯 Target",
-  HalfWayToTarget: "🤏 Half-way to target",
+  HalfWayToTarget: "🤏 Half-way to Target",
   RetirementTotal: "👴 Retirement",
   CoastFire: "🏝️ Coast FIRE",
 }

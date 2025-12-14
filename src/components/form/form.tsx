@@ -18,7 +18,6 @@ import {
   CardTitle,
 } from "../ui/card"
 import { Input } from "../ui/input"
-import { useState } from "react"
 import { useCalculationContext } from "@/components/calculation-input/calculation-context"
 import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {

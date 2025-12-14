@@ -55,7 +55,7 @@ function App() {
                   </CardHeader>
                   <CardContent className="w-90 md:w-full justify-center">
                     <div className="flex flex-col items-start justify-between">
-                      <div className="flex gap-5 flex-wrap justify-center">
+                      <div className="flex gap-6 flex-wrap justify-center">
                         <Form />
                         <Results />
                       </div>
