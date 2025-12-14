@@ -18,8 +18,8 @@ import {
   CardTitle,
 } from "../ui/card"
 import { Input } from "../ui/input"
-import { useContext, useState, type MouseEventHandler } from "react"
-import { CalculationContext } from "@/models/calculationContext"
+import { useState } from "react"
+import { useCalculationContext } from "@/components/calculation-input/calculation-context"
 import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
   Select,
@@ -33,9 +33,7 @@ import { Button } from "../ui/button"
 import { Banknote, BanknoteArrowUp } from "lucide-react"
 
 export default function Form() {
-  const { calculationInput, setCalculationInput } =
-    useContext(CalculationContext)
-  const [formValues, setFormValues] = useState(calculationInput)
+  const { calculationInput, setCalculationInput } = useCalculationContext()
 
   const { locale } = useLocale()
 
@@ -75,16 +73,15 @@ export default function Form() {
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     defaultValues: calculationInput,
-    values: formValues,
+    values: calculationInput,
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setCalculationInput(values)
-    setFormValues(values)
   }
 
   const handleInflationButtonClick = () => {
-    setValue("inflation", !formValues.inflation)
+    setValue("inflation", !calculationInput.inflation)
     handleSubmit(onSubmit)()
   }
 
@@ -338,7 +335,7 @@ export default function Form() {
                     type="button"
                     onClick={handleInflationButtonClick}
                   >
-                    {formValues.inflation ? (
+                    {calculationInput.inflation ? (
                       <>
                         <BanknoteArrowUp />{" "}
                         {`Today's ${getCurrencySymbol(locale)}`}
@@ -356,7 +353,7 @@ export default function Form() {
               )}
             ></Controller>
             <Controller
-              disabled={!formValues.inflation}
+              disabled={!calculationInput.inflation}
               name="inflationRate"
               control={control}
               render={({ field, fieldState }) => (

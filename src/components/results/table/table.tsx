@@ -15,16 +15,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { toLocaleCurrency } from "@/lib/utils"
-import { CalculationContext } from "@/models/calculationContext"
+import { useCalculationContext } from "@/components/calculation-input/calculation-context"
 import type { TableData } from "@/models/resultsData"
-import { useContext } from "react"
 
 export default function ResultsTable({
   tableData,
 }: {
   tableData: TableData[]
 }) {
-  const { setSelectedIndex } = useContext(CalculationContext)
+  const { setSelectedIndex } = useCalculationContext()
   const { locale } = useLocale()
 
   return (

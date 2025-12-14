@@ -8,9 +8,9 @@ import {
   CardTitle,
 } from "./components/ui/card"
 import {
-  CalculationContext,
+  CalculationContextProvider,
   defaultCalculationInput,
-} from "./models/calculationContext"
+} from "./components/calculation-input/calculation-context"
 import type { CalculationInput } from "./models/calculationInput"
 import Results from "./components/results/results"
 import Footer from "./components/footer/footer"
@@ -20,24 +20,10 @@ import LocalePicker from "./components/locale/locale-picker"
 import { LocaleProvider } from "./components/locale/locale-provider"
 
 function App() {
-  const [calculationInput, setCalculationInput] = useState<CalculationInput>(
-    defaultCalculationInput
-  )
-  const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
-    undefined
-  )
-
   return (
     <ThemeProvider defaultTheme="system" storageKey="theme">
       <LocaleProvider>
-        <CalculationContext.Provider
-          value={{
-            calculationInput,
-            setCalculationInput,
-            selectedIndex,
-            setSelectedIndex,
-          }}
-        >
+        <CalculationContextProvider>
           <div className="flex flex-col gap-5">
             <div className="flex justify-center w-full mt-5">
               <div className="flex justify-center w-90 md:w-full">
@@ -80,7 +66,7 @@ function App() {
             </div>
             <Footer />
           </div>
-        </CalculationContext.Provider>
+        </CalculationContextProvider>
       </LocaleProvider>
     </ThemeProvider>
   )

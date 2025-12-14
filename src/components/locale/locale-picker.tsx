@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import {
   Select,
   SelectContent,
@@ -7,8 +6,8 @@ import {
   SelectValue,
 } from "../ui/select"
 import { useLocale, type Locale } from "./locale-provider"
-import { CalculationContext } from "@/models/calculationContext"
-import { toLocaleFloat } from "@/lib/utils"
+import { useCalculationContext } from "@/components/calculation-input/calculation-context"
+import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import type { CalculationInput } from "@/models/calculationInput"
 
 const locales = [
@@ -19,24 +18,31 @@ const locales = [
 
 export default function LocalePicker() {
   const { locale, setLocale } = useLocale()
-  const { calculationInput, setCalculationInput } =
-    useContext(CalculationContext)
+  const { calculationInput, setCalculationInput } = useCalculationContext()
 
-  const onChange = () => {
+  const onChange = (value: Locale) => {
     const calcValues = {
       ...calculationInput,
-      rate: toLocaleFloat(calculationInput.rate, locale).toString(),
+      rate: toLocaleFloat(
+        parseLocaleFloat(calculationInput.rate, locale).toString(),
+        value
+      ),
       startingAmount: toLocaleFloat(
-        calculationInput.startingAmount,
-        locale
-      ).toString(),
+        parseLocaleFloat(calculationInput.startingAmount, locale).toString(),
+        value
+      ),
       contribution: toLocaleFloat(
-        calculationInput.contribution,
-        locale
-      ).toString(),
-      target: toLocaleFloat(calculationInput.target, locale).toString(),
+        parseLocaleFloat(calculationInput.contribution, locale).toString(),
+        value
+      ),
+      target: toLocaleFloat(
+        parseLocaleFloat(calculationInput.target, locale).toString(),
+        value
+      ),
     } as CalculationInput
     setCalculationInput(calcValues)
+
+    setLocale(value)
   }
 
   return (
@@ -44,8 +50,7 @@ export default function LocalePicker() {
       <Select
         value={locale}
         onValueChange={(value: Locale) => {
-          onChange()
-          setLocale(value)
+          onChange(value)
         }}
       >
         <SelectTrigger id="locale" className="w-15">

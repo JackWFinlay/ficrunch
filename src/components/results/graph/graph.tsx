@@ -21,13 +21,12 @@ import {
   type ChartConfig,
 } from "../../ui/chart"
 import type { ChartData } from "@/models/resultsData"
-import { useContext } from "react"
-import { CalculationContext } from "@/models/calculationContext"
+import { useCalculationContext } from "@/components/calculation-input/calculation-context"
 import { toLocaleCurrencyShort } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
 
 export default function Graph({ chartData }: { chartData: ChartData[] }) {
-  const { selectedIndex, setSelectedIndex } = useContext(CalculationContext)
+  const { selectedIndex, setSelectedIndex } = useCalculationContext()
 
   const { locale } = useLocale()
 

@@ -2,7 +2,7 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
 import { cn, toLocaleCurrency } from "@/lib/utils"
-import { CalculationContext } from "@/models/calculationContext"
+import { useLocale } from "../locale/locale-provider"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
@@ -126,7 +126,7 @@ function ChartTooltipContent({
     labelKey?: string
   }) {
   const { config } = useChart()
-  const { locale } = React.useContext(CalculationContext)
+  const { locale } = useLocale()
 
   const tooltipLabel = React.useMemo(() => {
     if (hideLabel || !payload?.length) {

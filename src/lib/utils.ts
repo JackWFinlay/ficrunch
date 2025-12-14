@@ -84,7 +84,7 @@ export function parseLocaleFloat(value: string, locale: Locale) {
   // Clean the input string
   let cleanedString = value.toString().replaceAll(thousandsSeparator, "") // Remove thousands separators
   cleanedString = cleanedString.replace(decimalSeparator, ".") // Replace decimal separator with period
-
+  console.log(`cleanedString: ${cleanedString}`)
   // Parse the cleaned string using parseFloat
   const float = parseFloat(cleanedString)
 

@@ -5,9 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { CalculationContext } from "@/models/calculationContext"
 import type { ChartData } from "@/models/resultsData"
-import { useContext } from "react"
 import {
   Table,
   TableHeader,
@@ -18,11 +16,12 @@ import {
 } from "@/components/ui/table"
 import { toLocaleCurrency } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
+import { useCalculationContext } from "@/components/calculation-input/calculation-context"
 
 const currentYear = new Date().getUTCFullYear()
 
 export default function Details({ chartData }: { chartData: ChartData[] }) {
-  const { selectedIndex } = useContext(CalculationContext)
+  const { selectedIndex } = useCalculationContext()
   const { locale } = useLocale()
 
   const selectedYear: string = selectedIndex

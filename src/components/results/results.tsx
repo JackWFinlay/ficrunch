@@ -1,6 +1,5 @@
 import Graph from "./graph/graph"
-import { CalculationContext } from "@/models/calculationContext"
-import { useContext } from "react"
+import { useCalculationContext } from "@/components/calculation-input/calculation-context"
 import ResultsTable from "./table/table"
 import { createTableData, parseLocaleFloat } from "@/lib/utils"
 import Details from "./details/details"
@@ -8,7 +7,7 @@ import Warning from "../warning/warning"
 import { useLocale } from "../locale/locale-provider"
 
 export default function Results() {
-  const { calculationInput } = useContext(CalculationContext)
+  const { calculationInput } = useCalculationContext()
   const { locale } = useLocale()
   const { tableData, chartData } = createTableData(calculationInput)
 
