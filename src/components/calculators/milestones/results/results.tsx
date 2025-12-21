@@ -1,0 +1,24 @@
+import Graph from "./graph/graph"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-input/calculation-context"
+import ResultsTable from "./table/table"
+import { parseLocaleFloat } from "@/lib/utils"
+import Details from "./details/details"
+import Warning from "../warning/warning"
+import { useLocale } from "@/components/locale/locale-provider"
+import { createTableData } from "@/components/calculators/milestones/utils"
+
+export default function Results() {
+  const { calculationInput } = useCalculationContext()
+  const { locale } = useLocale()
+  const { tableData, chartData } = createTableData(calculationInput)
+
+  return (
+    <div className="flex flex-col gap-6 w-78 lg:w-120 xl:w-180">
+      {chartData[chartData.length - 1].total <
+        parseLocaleFloat(calculationInput.target, locale) && <Warning />}
+      <ResultsTable tableData={tableData} />
+      <Graph chartData={chartData} />
+      <Details chartData={chartData} />
+    </div>
+  )
+}

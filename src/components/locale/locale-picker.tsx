@@ -6,9 +6,9 @@ import {
   SelectValue,
 } from "../ui/select"
 import { useLocale, type Locale } from "./locale-provider"
-import { useCalculationContext } from "@/components/calculation-input/calculation-context"
 import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
-import type { CalculationInput } from "@/models/calculationInput"
+import type { CalculationInput } from "@/components/calculators/milestones/calculationInput"
+import { useCalculationContext } from "../calculators/milestones/calculation-input/calculation-context"
 
 const locales = [
   { localeName: "en-US", localeSymbol: "$" },
@@ -21,6 +21,13 @@ export default function LocalePicker() {
   const { calculationInput, setCalculationInput } = useCalculationContext()
 
   const onChange = (value: Locale) => {
+    console.log(parseLocaleFloat(calculationInput.target, locale))
+    console.log(
+      toLocaleFloat(
+        parseLocaleFloat(calculationInput.target, locale).toString(),
+        value
+      )
+    )
     const calcValues = {
       ...calculationInput,
       rate: toLocaleFloat(
@@ -40,7 +47,9 @@ export default function LocalePicker() {
         value
       ),
     } as CalculationInput
+    console.log(calculationInput)
     setCalculationInput(calcValues)
+    console.log(calculationInput)
 
     setLocale(value)
   }

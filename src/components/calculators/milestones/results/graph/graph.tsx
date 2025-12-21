@@ -19,9 +19,9 @@ import {
   ChartLegend,
   ChartLegendContent,
   type ChartConfig,
-} from "../../ui/chart"
+} from "@/components/ui/chart"
 import type { ChartData } from "@/models/resultsData"
-import { useCalculationContext } from "@/components/calculation-input/calculation-context"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-input/calculation-context"
 import { toLocaleCurrencyShort } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
 
@@ -41,7 +41,6 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
   }
 
   const chartConfig = {
-    tooltipLabel: { label: "Portfolio Value" },
     interest: {
       label: "Interest",
       color: "var(--chart-1)",
@@ -57,7 +56,7 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
   } satisfies ChartConfig
 
   return (
-    <Card className="flex">
+    <Card>
       <CardHeader>
         <CardTitle>📊 Chart</CardTitle>
         <CardDescription className="text-xs text-light">

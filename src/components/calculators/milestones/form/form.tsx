@@ -16,9 +16,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card"
-import { Input } from "../ui/input"
-import { useCalculationContext } from "@/components/calculation-input/calculation-context"
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-input/calculation-context"
 import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
   Select,
@@ -26,9 +26,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select"
-import { getCurrencySymbol, useLocale } from "../locale/locale-provider"
-import { Button } from "../ui/button"
+} from "@/components/ui/select"
+import {
+  getCurrencySymbol,
+  useLocale,
+} from "@/components/locale/locale-provider"
+import { Button } from "@/components/ui/button"
 import { Banknote, BanknoteArrowUp } from "lucide-react"
 
 export default function Form() {
@@ -76,7 +79,7 @@ export default function Form() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setCalculationInput(values)
+    setCalculationInput({ ...calculationInput, ...values })
   }
 
   const handleInflationButtonClick = () => {
@@ -85,7 +88,7 @@ export default function Form() {
   }
 
   return (
-    <Card className="w-78">
+    <Card className="w-78 flex">
       <CardHeader>
         <CardTitle>📋 Plan</CardTitle>
         <CardDescription className="text-xs text-light">
@@ -93,7 +96,7 @@ export default function Form() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form id="milestone-calculator-form" onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="age"
