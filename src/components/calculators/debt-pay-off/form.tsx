@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
+import { fv, parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
   Select,
   SelectContent,
@@ -31,6 +31,7 @@ import {
   useLocale,
 } from "@/components/locale/locale-provider"
 import { useDebtCalculationContext } from "./debt-calculation-context"
+import { useEffect } from "react"
 
 export default function Form() {
   const { calculationInput, setCalculationInput } = useDebtCalculationContext()
@@ -43,23 +44,55 @@ export default function Form() {
   })
 
   const formSchema = z.object({
-    startingAmount: cleanNumberSchema,
-    contribution: cleanNumberSchema,
+    startingAmountDisplay: cleanNumberSchema,
+    contributionDisplay: cleanNumberSchema,
+    rateDisplay: cleanNumberSchema,
     frequency: z.enum(Frequency),
-    rate: cleanNumberSchema,
   })
 
   const { handleSubmit, register, control } = useForm<
     z.infer<typeof formSchema>
   >({
     resolver: zodResolver(formSchema),
-    mode: "onBlur",
+    mode: "all",
     defaultValues: calculationInput,
     values: calculationInput,
   })
 
+  useEffect(() => {
+    const startingAmountDisplay = toLocaleFloat(
+      calculationInput.startingAmount.toString(),
+      locale
+    )
+    const contributionDisplay = toLocaleFloat(
+      calculationInput.contribution.toString(),
+      locale
+    )
+    const rateDisplay = toLocaleFloat(calculationInput.rate.toString(), locale)
+
+    setCalculationInput({
+      ...calculationInput,
+      startingAmountDisplay,
+      contributionDisplay,
+      rateDisplay,
+    })
+  }, [locale])
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setCalculationInput({ ...calculationInput, ...values })
+    const { startingAmountDisplay, contributionDisplay, rateDisplay } = values
+    const startingAmount = parseLocaleFloat(startingAmountDisplay, locale)
+    const contribution = parseLocaleFloat(contributionDisplay, locale)
+    const rate = parseLocaleFloat(rateDisplay, locale)
+
+    setCalculationInput({
+      ...calculationInput,
+      startingAmount,
+      contribution,
+      rate,
+      startingAmountDisplay,
+      contributionDisplay,
+      rateDisplay,
+    })
   }
 
   return (
@@ -74,11 +107,11 @@ export default function Form() {
         <form id="milestone-calculator-form" onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
-              name="startingAmount"
+              name="startingAmountDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="startingAmount">
+                  <FieldLabel htmlFor="startingAmountDisplay">
                     Starting Amount
                   </FieldLabel>
                   <FieldLegend className="mb-1">
@@ -90,8 +123,9 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("startingAmount", {
+                        {...register("startingAmountDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
                         id="startingAmount"
@@ -109,11 +143,13 @@ export default function Form() {
               )}
             ></Controller>
             <Controller
-              name="contribution"
+              name="contributionDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="contribution">Contribution</FieldLabel>
+                  <FieldLabel htmlFor="contributionDisplay">
+                    Contribution
+                  </FieldLabel>
                   <FieldLegend className="mb-1">
                     How much are you paying off each period?
                   </FieldLegend>
@@ -123,8 +159,9 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("contribution", {
+                        {...register("contributionDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
                         id="contribution"
@@ -155,6 +192,7 @@ export default function Form() {
                   <Select
                     {...register("frequency", {
                       onBlur: handleSubmit(onSubmit),
+                      onChange: handleSubmit(onSubmit),
                     })}
                     name={field.name}
                     value={field.value}
@@ -182,11 +220,11 @@ export default function Form() {
               )}
             ></Controller>
             <Controller
-              name="rate"
+              name="rateDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="rate">Interest Rate</FieldLabel>
+                  <FieldLabel htmlFor="rateDisplay">Interest Rate</FieldLabel>
                   <FieldLegend className="mb-1">
                     What is the annual interest rate on the debt?
                   </FieldLegend>
@@ -196,8 +234,9 @@ export default function Form() {
                         %
                       </span>
                       <Input
-                        {...register("rate", {
+                        {...register("rateDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
                         id="rate"

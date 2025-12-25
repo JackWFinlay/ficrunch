@@ -1,12 +1,17 @@
 export type CalculationInput = {
   age: number
   retirementAge: number
-  startingAmount: string
-  target: string
-  contribution: string
+  startingAmount: number
+  startingAmountDisplay: string
+  target: number
+  targetDisplay: string
+  contribution: number
+  contributionDisplay: string
   frequency: string
-  rate: string
+  rate: number
+  rateDisplay: string
   inflation: boolean
-  inflationRate: string
+  inflationRate: number
+  inflationRateDisplay: string
   calculator: string
 }

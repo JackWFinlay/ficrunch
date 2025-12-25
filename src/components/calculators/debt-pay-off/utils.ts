@@ -1,6 +1,5 @@
-import { fv, parseLocaleFloat } from "@/lib/utils"
+import { fv } from "@/lib/utils"
 import type { DebtCalculationInput } from "./debt-calculation-context"
-import { useLocale } from "@/components/locale/locale-provider"
 import { Frequency } from "@/models/enums"
 import type { DebtChartData } from "./models"
 
@@ -45,14 +44,19 @@ const months = [
 ]
 
 export function createChartData(calculationInput: DebtCalculationInput) {
-  const { locale } = useLocale()
   let currentDate = new Date(new Date().setDate(1))
 
-  const contribution = parseLocaleFloat(calculationInput.contribution, locale)
-  const rate = parseLocaleFloat(calculationInput.rate, locale)
-  let balance = parseLocaleFloat(calculationInput.startingAmount, locale)
+  const { contribution, rate, startingAmount } = calculationInput
+  let balance = startingAmount
   const n = getNumberOfPeriods(calculationInput.frequency)
+
   let chartData: DebtChartData[] = []
+
+  const interestCheck = fv(0, balance, rate, 0, 1) - startingAmount
+
+  if (interestCheck > contribution) {
+    return chartData
+  }
 
   while (balance > 0) {
     const newBalance = fv(0, balance, rate, -contribution, n)
@@ -76,6 +80,5 @@ export function createChartData(calculationInput: DebtCalculationInput) {
     currentDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1))
   }
 
-  console.log(chartData.map((data) => data.balance))
   return chartData
 }

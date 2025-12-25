@@ -7,24 +7,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import { useCalculatorContext } from "./calculator-context"
 
 export default function CalculatorSelector() {
-  const { calculationInput, setCalculationInput } = useCalculationContext()
+  const { calculator, setCalculator } = useCalculatorContext()
 
   async function onChange(value: string) {
-    setCalculationInput({ ...calculationInput, calculator: value })
+    setCalculator(value)
   }
 
   return (
-    <Select
-      name="calculator"
-      value={calculationInput.calculator}
-      onValueChange={onChange}
-    >
+    <Select name="calculator" value={calculator} onValueChange={onChange}>
       <SelectTrigger id="calculator" className="w-18 md:w-35">
         <SelectValue>
           <div className="md:hidden">🧮</div>
-          <div className="hidden md:flex">{calculationInput.calculator}</div>
+          <div className="hidden md:flex">{calculator}</div>
         </SelectValue>
       </SelectTrigger>
       <SelectContent className="w-18 md:w-35" position="item-aligned">

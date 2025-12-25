@@ -11,11 +11,8 @@ import {
   YAxis,
   Cell,
   type MouseHandlerDataParam,
-  LineChart,
-  Line,
   AreaChart,
   Area,
-  Label,
 } from "recharts"
 import {
   ChartContainer,
@@ -97,7 +94,7 @@ export default function Chart({ chartData }: { chartData: DebtChartData[] }) {
                 <Area
                   dataKey="balance"
                   fill="var(--chart-2)"
-                  stroke="var(--chart-1)"
+                  stroke="var(--foreground)"
                 >
                   {chartData.map((_, index) => (
                     <Cell

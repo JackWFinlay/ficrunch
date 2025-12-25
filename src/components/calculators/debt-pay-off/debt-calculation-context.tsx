@@ -1,18 +1,24 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useState } from "react"
 import { Frequency } from "@/models/enums"
 
 export type DebtCalculationInput = {
-  startingAmount: string
-  contribution: string
+  startingAmount: number
+  startingAmountDisplay: string
+  contribution: number
+  contributionDisplay: string
+  rate: number
+  rateDisplay: string
   frequency: string
-  rate: string
 }
 
 export const defaultCalculationInput = {
-  startingAmount: "10000",
-  contribution: "1000",
+  startingAmount: 10000,
+  startingAmountDisplay: "10000",
+  contribution: 1000,
+  contributionDisplay: "1000",
+  rate: 8,
+  rateDisplay: "8",
   frequency: Frequency.Monthly,
-  rate: "8",
 } as DebtCalculationInput
 
 const initialState = {
@@ -47,8 +53,6 @@ export function DebtCalculationContextProvider({
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
     undefined
   )
-
-  useEffect(() => {}, [calculationInput])
 
   const values = {
     calculationInput,

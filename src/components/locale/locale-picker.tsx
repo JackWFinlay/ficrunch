@@ -18,39 +18,8 @@ const locales = [
 
 export default function LocalePicker() {
   const { locale, setLocale } = useLocale()
-  const { calculationInput, setCalculationInput } = useCalculationContext()
 
   const onChange = (value: Locale) => {
-    console.log(parseLocaleFloat(calculationInput.target, locale))
-    console.log(
-      toLocaleFloat(
-        parseLocaleFloat(calculationInput.target, locale).toString(),
-        value
-      )
-    )
-    const calcValues = {
-      ...calculationInput,
-      rate: toLocaleFloat(
-        parseLocaleFloat(calculationInput.rate, locale).toString(),
-        value
-      ),
-      startingAmount: toLocaleFloat(
-        parseLocaleFloat(calculationInput.startingAmount, locale).toString(),
-        value
-      ),
-      contribution: toLocaleFloat(
-        parseLocaleFloat(calculationInput.contribution, locale).toString(),
-        value
-      ),
-      target: toLocaleFloat(
-        parseLocaleFloat(calculationInput.target, locale).toString(),
-        value
-      ),
-    } as CalculationInput
-    console.log(calculationInput)
-    setCalculationInput(calcValues)
-    console.log(calculationInput)
-
     setLocale(value)
   }
 

@@ -1,32 +1,16 @@
-import {
-  parseLocaleFloat,
-  getNumberOfPeriods,
-  fv,
-  nper,
-  round,
-} from "@/lib/utils"
+import { getNumberOfPeriods, fv, nper, round } from "@/lib/utils"
 import type { CalculationInput } from "@/components/calculators/milestones/calculationInput"
 import { Milestone } from "@/models/enums"
 import type { ChartData, TableData } from "@/models/resultsData"
-import { useLocale } from "../../locale/locale-provider"
 
 export function createTableData(calculationInput: CalculationInput) {
-  const { locale } = useLocale()
   const { age, frequency, retirementAge, inflation } = calculationInput
 
   const currentYear = new Date().getUTCFullYear()
   const years = retirementAge - age
-  const startingAmount = parseLocaleFloat(
-    calculationInput.startingAmount,
-    locale
-  )
-  const contribution = parseLocaleFloat(calculationInput.contribution, locale)
-  const target = parseLocaleFloat(calculationInput.target, locale)
-  const inflationRate = parseLocaleFloat(
-    calculationInput.inflationRate ?? 0,
-    locale
-  )
-  let rate = parseLocaleFloat(calculationInput.rate, locale)
+  const { startingAmount, contribution, target, inflationRate } =
+    calculationInput
+  let { rate } = calculationInput
 
   rate = inflation ? rate - inflationRate : rate
 

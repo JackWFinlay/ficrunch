@@ -1,25 +1,25 @@
-import { useCalculationContext } from "./milestones/calculation-input/calculation-context"
 import { Calculator as CalculatorType } from "@/models/enums"
 import MilestoneCalculator from "./milestones/milestone-calculator"
 import DebtCalculator from "./debt-pay-off/debt-calculator"
 import CoastFireCalculator from "./coast-fire/coast-fire-calculator"
+import { useCalculatorContext } from "../calculator-selector/calculator-context"
 
 export default function Calculator() {
-  const { calculationInput } = useCalculationContext()
+  const { calculator } = useCalculatorContext()
 
-  let calculator = null
+  let calculatorClass = null
 
-  switch (calculationInput.calculator) {
+  switch (calculator) {
     case CalculatorType.DebtPayOff:
-      calculator = <DebtCalculator />
+      calculatorClass = <DebtCalculator />
       break
     case CalculatorType.CoastFire:
-      calculator = <CoastFireCalculator />
+      calculatorClass = <CoastFireCalculator />
       break
     case CalculatorType.Milestones:
     default:
-      calculator = <MilestoneCalculator />
+      calculatorClass = <MilestoneCalculator />
   }
 
-  return <>{calculator}</>
+  return <>{calculatorClass}</>
 }
