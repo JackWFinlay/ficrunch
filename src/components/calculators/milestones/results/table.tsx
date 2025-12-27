@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { toLocaleCurrency } from "@/lib/utils"
-import { useCalculationContext } from "@/components/calculation-input/calculation-context"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-context"
 import type { TableData } from "@/models/resultsData"
 
 export default function ResultsTable({
@@ -27,7 +27,7 @@ export default function ResultsTable({
   const { locale } = useLocale()
 
   return (
-    <Card className="flex">
+    <Card>
       <CardHeader>
         <CardTitle>🧭 Milestones</CardTitle>
         <CardDescription className="text-xs text-light">

@@ -13,12 +13,11 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card"
-import { Input } from "../ui/input"
-import { useCalculationContext } from "@/components/calculation-input/calculation-context"
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-context"
 import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
   Select,
@@ -26,9 +25,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select"
-import { getCurrencySymbol, useLocale } from "../locale/locale-provider"
-import { Button } from "../ui/button"
+} from "@/components/ui/select"
+import {
+  getCurrencySymbol,
+  useLocale,
+} from "@/components/locale/locale-provider"
+import { Button } from "@/components/ui/button"
 import { Banknote, BanknoteArrowUp } from "lucide-react"
 
 export default function Form() {
@@ -45,13 +47,13 @@ export default function Form() {
     .object({
       age: z.coerce.number<number>().int().positive().lte(150),
       retirementAge: z.coerce.number<number>().int().positive().lte(150),
-      startingAmount: cleanNumberSchema,
-      target: cleanNumberSchema,
-      contribution: cleanNumberSchema,
+      startingAmountDisplay: cleanNumberSchema,
+      targetDisplay: cleanNumberSchema,
+      contributionDisplay: cleanNumberSchema,
       frequency: z.enum(Frequency),
-      rate: cleanNumberSchema,
+      rateDisplay: cleanNumberSchema,
       inflation: z.boolean(),
-      inflationRate: cleanNumberSchema,
+      inflationRateDisplay: cleanNumberSchema,
     })
     .transform((arg, ctx) => {
       if (ctx.value.retirementAge <= ctx.value.age) {
@@ -76,7 +78,32 @@ export default function Form() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setCalculationInput(values)
+    const {
+      startingAmountDisplay,
+      contributionDisplay,
+      rateDisplay,
+      targetDisplay,
+      inflationRateDisplay,
+    } = values
+    const startingAmount = parseLocaleFloat(startingAmountDisplay, locale)
+    const target = parseLocaleFloat(targetDisplay, locale)
+    const contribution = parseLocaleFloat(contributionDisplay, locale)
+    const rate = parseLocaleFloat(rateDisplay, locale)
+    const inflationRate = parseLocaleFloat(inflationRateDisplay, locale)
+
+    setCalculationInput({
+      ...calculationInput,
+      startingAmount,
+      target,
+      contribution,
+      rate,
+      inflationRate,
+      startingAmountDisplay,
+      targetDisplay,
+      contributionDisplay,
+      rateDisplay,
+      inflationRateDisplay,
+    })
   }
 
   const handleInflationButtonClick = () => {
@@ -85,7 +112,7 @@ export default function Form() {
   }
 
   return (
-    <Card className="w-78">
+    <Card className="w-78 flex">
       <CardHeader>
         <CardTitle>📋 Plan</CardTitle>
         <CardDescription className="text-xs text-light">
@@ -93,7 +120,7 @@ export default function Form() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form id="milestone-calculator-form" onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="age"
@@ -103,7 +130,10 @@ export default function Form() {
                   <FieldLabel htmlFor="age">Current Age</FieldLabel>
                   <FieldLegend className="mb-1">Your Current Age</FieldLegend>
                   <Input
-                    {...register("age", { onBlur: handleSubmit(onSubmit) })}
+                    {...register("age", {
+                      onBlur: handleSubmit(onSubmit),
+                      onChange: handleSubmit(onSubmit),
+                    })}
                     {...field}
                     id="age"
                     type="number"
@@ -131,6 +161,7 @@ export default function Form() {
                   <Input
                     {...register("retirementAge", {
                       onBlur: handleSubmit(onSubmit),
+                      onChange: handleSubmit(onSubmit),
                     })}
                     {...field}
                     id="retirementAge"
@@ -145,11 +176,11 @@ export default function Form() {
               )}
             ></Controller>
             <Controller
-              name="startingAmount"
+              name="startingAmountDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="startingAmount">
+                  <FieldLabel htmlFor="startingAmountDisplay">
                     Starting Amount
                   </FieldLabel>
                   <FieldLegend className="mb-1">
@@ -161,11 +192,12 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("startingAmount", {
+                        {...register("startingAmountDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
-                        id="startingAmount"
+                        id="startingAmountDisplay"
                         aria-invalid={fieldState.invalid}
                         placeholder="0"
                         autoComplete="off"
@@ -180,11 +212,11 @@ export default function Form() {
               )}
             ></Controller>
             <Controller
-              name="target"
+              name="targetDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="target">Target Amount</FieldLabel>
+                  <FieldLabel htmlFor="targetDisplay">Target Amount</FieldLabel>
                   <FieldLegend className="mb-1">
                     How much are you aiming to amass before retirement?
                   </FieldLegend>
@@ -194,11 +226,12 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("target", {
+                        {...register("targetDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
-                        id="target"
+                        id="targetDisplay"
                         aria-invalid={fieldState.invalid}
                         placeholder="1000000"
                         autoComplete="off"
@@ -213,11 +246,13 @@ export default function Form() {
               )}
             ></Controller>
             <Controller
-              name="contribution"
+              name="contributionDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="contribution">Contribution</FieldLabel>
+                  <FieldLabel htmlFor="contributionDisplay">
+                    Contribution
+                  </FieldLabel>
                   <FieldLegend className="mb-1">
                     How much are you investing each period?
                   </FieldLegend>
@@ -227,11 +262,12 @@ export default function Form() {
                         {getCurrencySymbol(locale)}
                       </span>
                       <Input
-                        {...register("contribution", {
+                        {...register("contributionDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
-                        id="contribution"
+                        id="contributionDisplay"
                         aria-invalid={fieldState.invalid}
                         placeholder="1000"
                         autoComplete="off"
@@ -259,6 +295,7 @@ export default function Form() {
                   <Select
                     {...register("frequency", {
                       onBlur: handleSubmit(onSubmit),
+                      onChange: handleSubmit(onSubmit),
                     })}
                     name={field.name}
                     value={field.value}
@@ -286,11 +323,11 @@ export default function Form() {
               )}
             ></Controller>
             <Controller
-              name="rate"
+              name="rateDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="rate">Rate</FieldLabel>
+                  <FieldLabel htmlFor="rateDisplay">Rate</FieldLabel>
                   <FieldLegend className="mb-1">
                     What annualised rate do you expect your investments to grow
                     at?
@@ -301,11 +338,12 @@ export default function Form() {
                         %
                       </span>
                       <Input
-                        {...register("rate", {
+                        {...register("rateDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
-                        id="rate"
+                        id="rateDisplay"
                         aria-invalid={fieldState.invalid}
                         placeholder="8"
                         autoComplete="off"
@@ -353,11 +391,11 @@ export default function Form() {
             ></Controller>
             <Controller
               disabled={!calculationInput.inflation}
-              name="inflationRate"
+              name="inflationRateDisplay"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel htmlFor="rate">Inflation Rate</FieldLabel>
+                  <FieldLabel htmlFor="rateDisplay">Inflation Rate</FieldLabel>
                   <FieldLegend className="mb-1">
                     What value do you want to use for average inflation?
                   </FieldLegend>
@@ -367,11 +405,12 @@ export default function Form() {
                         %
                       </span>
                       <Input
-                        {...register("inflationRate", {
+                        {...register("inflationRateDisplay", {
                           onBlur: handleSubmit(onSubmit),
+                          onChange: handleSubmit(onSubmit),
                         })}
                         {...field}
-                        id="inflationRate"
+                        id="inflationRateDisplay"
                         aria-invalid={fieldState.invalid}
                         placeholder="3"
                         autoComplete="off"
@@ -388,7 +427,6 @@ export default function Form() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter></CardFooter>
     </Card>
   )
 }
