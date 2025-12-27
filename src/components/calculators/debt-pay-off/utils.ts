@@ -62,7 +62,7 @@ export function createChartData(calculationInput: DebtCalculationInput) {
     const newBalance = fv(0, balance, rate, -contribution, n)
     const difference = balance - newBalance
 
-    const interest = fv(1, balance, rate, 0, 1) - newBalance
+    const interest = fv(0, balance, rate, 0, 1) - balance
 
     balance = Math.max(0, newBalance)
 

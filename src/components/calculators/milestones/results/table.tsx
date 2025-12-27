@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { toLocaleCurrency } from "@/lib/utils"
-import { useCalculationContext } from "@/components/calculators/milestones/calculation-input/calculation-context"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-context"
 import type { TableData } from "@/models/resultsData"
 
 export default function ResultsTable({

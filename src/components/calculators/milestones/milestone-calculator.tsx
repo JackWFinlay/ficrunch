@@ -1,5 +1,5 @@
 import CalculatorDescription from "../../calculator-description/calculator-description"
-import Form from "./form/form"
+import Form from "./form"
 import Results from "./results/results"
 
 export default function MilestoneCalculator() {

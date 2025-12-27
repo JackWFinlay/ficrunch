@@ -17,6 +17,6 @@ export const Milestone = {
 
 export const Calculator = {
   Milestones: "Milestones",
-  CoastFire: "Coast Fire",
+  //CoastFire: "Coast Fire",
   DebtPayOff: "Debt Pay Off",
 }

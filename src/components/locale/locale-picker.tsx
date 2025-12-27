@@ -6,9 +6,6 @@ import {
   SelectValue,
 } from "../ui/select"
 import { useLocale, type Locale } from "./locale-provider"
-import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
-import type { CalculationInput } from "@/components/calculators/milestones/calculationInput"
-import { useCalculationContext } from "../calculators/milestones/calculation-input/calculation-context"
 
 const locales = [
   { localeName: "en-US", localeSymbol: "$" },

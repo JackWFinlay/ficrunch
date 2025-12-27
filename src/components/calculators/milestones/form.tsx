@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { useCalculationContext } from "@/components/calculators/milestones/calculation-input/calculation-context"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-context"
 import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
   Select,

@@ -21,11 +21,11 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import type { ChartData } from "@/models/resultsData"
-import { useCalculationContext } from "@/components/calculators/milestones/calculation-input/calculation-context"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-context"
 import { toLocaleCurrencyShort } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
 
-export default function Graph({ chartData }: { chartData: ChartData[] }) {
+export default function Chart({ chartData }: { chartData: ChartData[] }) {
   const { selectedIndex, setSelectedIndex } = useCalculationContext()
 
   const { locale } = useLocale()

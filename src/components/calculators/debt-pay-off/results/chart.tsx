@@ -79,12 +79,12 @@ export default function Chart({ chartData }: { chartData: DebtChartData[] }) {
 
                 <XAxis
                   dataKey="month"
-                  tickLine={false}
+                  tickLine
                   tickMargin={10}
                   axisLine={true}
                   angle={-90}
-                  height={60}
-                  className="mr-10"
+                  dy={15}
+                  height={50}
                 />
                 <ChartLegend
                   content={

@@ -3,6 +3,7 @@ import { useDebtCalculationContext } from "../debt-calculation-context"
 import { createChartData } from "../utils"
 import Chart from "./chart"
 import Warning from "./warning"
+import Details from "./details"
 
 export default function Results() {
   const {
@@ -17,7 +18,14 @@ export default function Results() {
 
   return (
     <div className="flex flex-col gap-6 w-78 lg:w-120 xl:w-180">
-      {showWarning ? <Warning /> : <Chart chartData={chartData} />}
+      {showWarning ? (
+        <Warning />
+      ) : (
+        <div className="flex flex-col gap-6">
+          <Chart chartData={chartData} />
+          <Details chartData={chartData} />{" "}
+        </div>
+      )}
     </div>
   )
 }
