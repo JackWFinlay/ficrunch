@@ -14,3 +14,9 @@ export const Milestone = {
   RetirementTotal: "👴 Retirement",
   CoastFire: "🏝️ Coast FIRE",
 }
+
+export const Calculator = {
+  Milestones: "Milestones",
+  //CoastFire: "Coast Fire",
+  DebtPayOff: "Debt Pay Off",
+}

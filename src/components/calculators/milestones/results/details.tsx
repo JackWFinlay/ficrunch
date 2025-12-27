@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table"
 import { toLocaleCurrency } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
-import { useCalculationContext } from "@/components/calculation-input/calculation-context"
+import { useCalculationContext } from "@/components/calculators/milestones/calculation-context"
 
 const currentYear = new Date().getUTCFullYear()
 

@@ -6,27 +6,27 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  BarChart,
   CartesianGrid,
   XAxis,
-  Bar,
   YAxis,
   Cell,
   type MouseHandlerDataParam,
+  AreaChart,
+  Area,
 } from "recharts"
 import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   type ChartConfig,
-} from "../../ui/chart"
-import type { ChartData } from "@/models/resultsData"
-import { useCalculationContext } from "@/components/calculation-input/calculation-context"
+} from "@/components/ui/chart"
 import { toLocaleCurrencyShort } from "@/lib/utils"
 import { useLocale } from "@/components/locale/locale-provider"
+import { useDebtCalculationContext } from "../debt-calculation-context"
+import type { DebtChartData } from "../models"
 
-export default function Graph({ chartData }: { chartData: ChartData[] }) {
-  const { selectedIndex, setSelectedIndex } = useCalculationContext()
+export default function Chart({ chartData }: { chartData: DebtChartData[] }) {
+  const { selectedIndex, setSelectedIndex } = useDebtCalculationContext()
 
   const { locale } = useLocale()
 
@@ -41,37 +41,28 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
   }
 
   const chartConfig = {
-    tooltipLabel: { label: "Portfolio Value" },
-    interest: {
-      label: "Interest",
+    balance: {
+      label: "Balance",
       color: "var(--chart-1)",
-    },
-    contributions: {
-      label: "Contributions",
-      color: "var(--chart-2)",
-    },
-    total: {
-      label: "Total",
-      color: "var(--foreground)",
     },
   } satisfies ChartConfig
 
   return (
-    <Card className="flex">
+    <Card>
       <CardHeader>
         <CardTitle>📊 Chart</CardTitle>
         <CardDescription className="text-xs text-light">
-          Line goes up
+          Line goes down
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col justify-center overflow-x-auto gap-5">
+        <div className="flex flex-col justify-center gap-5">
           <div className="flex">
             <ChartContainer
               config={chartConfig}
-              className="flex aspect-2 w-full"
+              className="flex aspect-2 min-w-full"
             >
-              <BarChart
+              <AreaChart
                 accessibilityLayer
                 data={chartData}
                 onMouseMove={handleMouseMove}
@@ -85,18 +76,26 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
                   stroke="var(--foreground)"
                   tick={{ fill: "var(--foreground)" }}
                 />
+
                 <XAxis
-                  dataKey="year"
-                  tickLine={false}
+                  dataKey="month"
+                  tickLine
                   tickMargin={10}
                   axisLine={true}
+                  angle={-90}
+                  dy={15}
+                  height={50}
                 />
                 <ChartLegend
                   content={
                     <ChartLegendContent verticalAlign="middle" payload={null} />
                   }
                 ></ChartLegend>
-                <Bar dataKey="contributions" stackId="a" fill="var(--chart-2)">
+                <Area
+                  dataKey="balance"
+                  fill="var(--chart-2)"
+                  stroke="var(--foreground)"
+                >
                   {chartData.map((_, index) => (
                     <Cell
                       key={`cell-${index}`}
@@ -105,19 +104,8 @@ export default function Graph({ chartData }: { chartData: ChartData[] }) {
                       }
                     />
                   ))}
-                </Bar>
-                <Bar dataKey="interest" stackId="a" fill="var(--chart-1)">
-                  {chartData.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill="var(--chart-1)"
-                      opacity={
-                        selectedIndex ? (index == selectedIndex ? 1 : 0.25) : 1
-                      }
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
+                </Area>
+              </AreaChart>
             </ChartContainer>
           </div>
         </div>
