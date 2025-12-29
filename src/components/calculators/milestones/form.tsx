@@ -32,11 +32,35 @@ import {
 } from "@/components/locale/locale-provider"
 import { Button } from "@/components/ui/button"
 import { Banknote, BanknoteArrowUp } from "lucide-react"
+import { useEffect } from "react"
 
 export default function Form() {
   const { calculationInput, setCalculationInput } = useCalculationContext()
 
   const { locale } = useLocale()
+
+  useEffect(() => {
+    const { startingAmount, contribution, rate, inflationRate, target } =
+      calculationInput
+
+    const startingAmountDisplay = toLocaleFloat(
+      startingAmount.toString(),
+      locale
+    )
+    const targetDisplay = toLocaleFloat(target.toString(), locale)
+    const contributionDisplay = toLocaleFloat(contribution.toString(), locale)
+    const rateDisplay = toLocaleFloat(rate.toString(), locale)
+    const inflationRateDisplay = toLocaleFloat(inflationRate.toString(), locale)
+
+    setCalculationInput({
+      ...calculationInput,
+      startingAmountDisplay,
+      targetDisplay,
+      contributionDisplay,
+      rateDisplay,
+      inflationRateDisplay,
+    })
+  }, [locale])
 
   const cleanNumberSchema = z.string().transform((val) => {
     const float = parseLocaleFloat(val, locale)
@@ -72,18 +96,22 @@ export default function Form() {
     z.infer<typeof formSchema>
   >({
     resolver: zodResolver(formSchema),
-    mode: "onBlur",
+    mode: "all",
     defaultValues: calculationInput,
     values: calculationInput,
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const {
+      age,
+      retirementAge,
       startingAmountDisplay,
       contributionDisplay,
       rateDisplay,
       targetDisplay,
       inflationRateDisplay,
+      inflation,
+      frequency,
     } = values
     const startingAmount = parseLocaleFloat(startingAmountDisplay, locale)
     const target = parseLocaleFloat(targetDisplay, locale)
@@ -92,11 +120,14 @@ export default function Form() {
     const inflationRate = parseLocaleFloat(inflationRateDisplay, locale)
 
     setCalculationInput({
-      ...calculationInput,
+      age,
+      retirementAge,
       startingAmount,
       target,
       contribution,
+      frequency,
       rate,
+      inflation,
       inflationRate,
       startingAmountDisplay,
       targetDisplay,
@@ -106,7 +137,7 @@ export default function Form() {
     })
   }
 
-  const handleInflationButtonClick = () => {
+  function handleInflationButtonClick() {
     setValue("inflation", !calculationInput.inflation)
     handleSubmit(onSubmit)()
   }
@@ -368,6 +399,7 @@ export default function Form() {
                     today's value of money?
                   </FieldLegend>
                   <Button
+                    {...register("rateDisplay")}
                     variant="outline"
                     type="button"
                     onClick={handleInflationButtonClick}

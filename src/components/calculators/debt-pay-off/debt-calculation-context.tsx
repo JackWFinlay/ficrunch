@@ -30,15 +30,14 @@ const initialState = {
 
 type DebtCalculationContextState = {
   calculationInput: DebtCalculationInput
-  setCalculationInput: React.Dispatch<
-    React.SetStateAction<DebtCalculationInput>
-  >
+  setCalculationInput: (input: DebtCalculationInput) => void
   selectedIndex: number | undefined
   setSelectedIndex: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
 type DebtCalculationContextProps = {
   children: React.ReactNode
+  storageKey?: string
 }
 
 const DebtCalculationContext =
@@ -46,17 +45,27 @@ const DebtCalculationContext =
 
 export function DebtCalculationContextProvider({
   children,
+  storageKey = "debt-calculator-values",
   ...props
 }: DebtCalculationContextProps) {
   const [calculationInput, setCalculationInput] =
-    useState<DebtCalculationInput>(defaultCalculationInput)
+    useState<DebtCalculationInput>(() =>
+      JSON.parse(
+        localStorage.getItem(storageKey) ??
+          JSON.stringify(defaultCalculationInput)
+      )
+    )
+
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
     undefined
   )
 
   const values = {
     calculationInput,
-    setCalculationInput,
+    setCalculationInput: (input: DebtCalculationInput) => {
+      localStorage.setItem(storageKey, JSON.stringify(input))
+      setCalculationInput(input)
+    },
     selectedIndex,
     setSelectedIndex,
   }

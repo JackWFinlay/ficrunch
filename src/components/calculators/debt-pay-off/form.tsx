@@ -60,15 +60,14 @@ export default function Form() {
   })
 
   useEffect(() => {
+    const { startingAmount, contribution, rate } = calculationInput
+
     const startingAmountDisplay = toLocaleFloat(
-      calculationInput.startingAmount.toString(),
+      startingAmount.toString(),
       locale
     )
-    const contributionDisplay = toLocaleFloat(
-      calculationInput.contribution.toString(),
-      locale
-    )
-    const rateDisplay = toLocaleFloat(calculationInput.rate.toString(), locale)
+    const contributionDisplay = toLocaleFloat(contribution.toString(), locale)
+    const rateDisplay = toLocaleFloat(rate.toString(), locale)
 
     setCalculationInput({
       ...calculationInput,

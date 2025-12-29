@@ -13,5 +13,4 @@ export type CalculationInput = {
   inflation: boolean
   inflationRate: number
   inflationRateDisplay: string
-  calculator: string
 }

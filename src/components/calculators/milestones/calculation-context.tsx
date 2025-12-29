@@ -17,7 +17,6 @@ export const defaultCalculationInput = {
   inflation: true,
   inflationRate: 3,
   inflationRateDisplay: "3",
-  calculator: Calculator.Milestones,
 } as CalculationInput
 
 const initialState = {
@@ -29,23 +28,29 @@ const initialState = {
 
 type CalculationContextState = {
   calculationInput: CalculationInput
-  setCalculationInput: React.Dispatch<React.SetStateAction<CalculationInput>>
+  setCalculationInput: (input: CalculationInput) => void
   selectedIndex: number | undefined
   setSelectedIndex: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
 type CalculationContextProps = {
   children: React.ReactNode
+  storageKey?: string
 }
 
 const CalculationContext = createContext<CalculationContextState>(initialState)
 
 export function CalculationContextProvider({
   children,
+  storageKey = "milestone-calculator-values",
   ...props
 }: CalculationContextProps) {
   const [calculationInput, setCalculationInput] = useState<CalculationInput>(
-    defaultCalculationInput
+    () =>
+      JSON.parse(
+        localStorage.getItem(storageKey) ??
+          JSON.stringify(defaultCalculationInput)
+      )
   )
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
     undefined
@@ -55,7 +60,10 @@ export function CalculationContextProvider({
 
   const values = {
     calculationInput,
-    setCalculationInput,
+    setCalculationInput: (input: CalculationInput) => {
+      localStorage.setItem(storageKey, JSON.stringify(input))
+      setCalculationInput(input)
+    },
     selectedIndex,
     setSelectedIndex,
   }
