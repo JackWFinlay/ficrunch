@@ -83,8 +83,8 @@ export default function Chart({ chartData }: { chartData: DebtChartData[] }) {
                   tickMargin={10}
                   axisLine={true}
                   angle={-90}
-                  dy={15}
-                  height={50}
+                  dy={20}
+                  height={60}
                 />
                 <ChartLegend
                   content={

@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { fv, parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
+import { parseLocaleFloat, toLocaleFloat } from "@/lib/utils"
 import {
   Select,
   SelectContent,
@@ -79,7 +79,12 @@ export default function Form() {
   }, [locale])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { startingAmountDisplay, contributionDisplay, rateDisplay } = values
+    const {
+      startingAmountDisplay,
+      contributionDisplay,
+      rateDisplay,
+      frequency,
+    } = values
     const startingAmount = parseLocaleFloat(startingAmountDisplay, locale)
     const contribution = parseLocaleFloat(contributionDisplay, locale)
     const rate = parseLocaleFloat(rateDisplay, locale)
@@ -88,6 +93,7 @@ export default function Form() {
       ...calculationInput,
       startingAmount,
       contribution,
+      frequency,
       rate,
       startingAmountDisplay,
       contributionDisplay,

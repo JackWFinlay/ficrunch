@@ -37,7 +37,7 @@ export function createTableData(calculationInput: CalculationInput) {
     (_, index: number) => {
       const contributions = startingAmount + contribution * (index + 1) * n
 
-      const total = fv(index, startingAmount, rate, contribution, n)
+      const total = fv(index, startingAmount, rate, contribution, n, n)
 
       const interest = total - contributions
 
@@ -113,7 +113,7 @@ export function createTableData(calculationInput: CalculationInput) {
   const halfwayTime = targetTime / 2 / n
 
   const halfwayValue = round(
-    fv(halfwayTime - 1, startingAmount, rate, contribution, n)
+    fv(halfwayTime - 1, startingAmount, rate, contribution, n, n)
   )
 
   const clampIndex = (index: number) => {

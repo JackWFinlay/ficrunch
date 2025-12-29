@@ -1,18 +1,23 @@
 import { fv } from "@/lib/utils"
 import { useDebtCalculationContext } from "../debt-calculation-context"
-import { createChartData } from "../utils"
+import { createChartData, getFrequency } from "../utils"
 import Chart from "./chart"
 import Warning from "./warning"
 import Details from "./details"
+import { useMemo } from "react"
 
 export default function Results() {
   const {
     calculationInput,
-    calculationInput: { startingAmount, rate, contribution },
+    calculationInput: { startingAmount, rate, contribution, frequency },
   } = useDebtCalculationContext()
-  const chartData = createChartData(calculationInput)
+  const chartData = useMemo(
+    () => createChartData(calculationInput),
+    [calculationInput]
+  )
 
-  const interest = fv(0, startingAmount, rate, 0, 1) - startingAmount
+  const n = getFrequency(frequency)
+  const interest = fv(0, startingAmount, rate, 0, n, 1) - startingAmount
 
   const showWarning = interest > contribution
 

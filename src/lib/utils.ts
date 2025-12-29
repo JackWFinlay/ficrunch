@@ -133,12 +133,13 @@ export function fv(
   startingAmount: number,
   rate: number,
   contribution: number,
-  n: number
+  n: number,
+  periods: number
 ) {
   const percentage = rate / 100 / n
   return (
-    startingAmount * Math.pow(1 + percentage, n * (index + 1)) +
+    startingAmount * Math.pow(1 + percentage, periods * (index + 1)) +
     contribution *
-      ((Math.pow(1 + percentage, n * (index + 1)) - 1) / percentage)
+      ((Math.pow(1 + percentage, periods * (index + 1)) - 1) / percentage)
   )
 }

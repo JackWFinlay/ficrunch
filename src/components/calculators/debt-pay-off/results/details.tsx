@@ -44,7 +44,7 @@ export default function Details({ chartData }: { chartData: DebtChartData[] }) {
           </TableHeader>
           <TableBody>
             <TableRow className="hover:bg-foreground! hover:text-background bg-accent">
-              <TableCell>🗓️ Month</TableCell>
+              <TableCell>🗓️ Date</TableCell>
               <TableCell className="text-right">{selectedDate}</TableCell>
             </TableRow>
             <TableRow className="hover:bg-foreground! hover:text-background">
