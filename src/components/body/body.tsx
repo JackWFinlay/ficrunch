@@ -16,11 +16,11 @@ export default function Body({ children }: { children: React.ReactNode }) {
           <CardHeader className="gap-0">
             <div className="flex justify-between">
               <div className="flex flex-row gap-0 md:gap-2.5 items-center">
-                <div className="hidden md:flex">
+                <div className="hidden md:flex ml-2.5">
                   <img src="/logo.svg" alt="ficalc logo" className="h-9" />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <CardTitle>Financial Independence Calculator</CardTitle>
+                  <CardTitle>FI Crunch</CardTitle>
                   <CardDescription className="text-xs text-light">
                     Calculate and plan your financial independence goals
                   </CardDescription>

@@ -1,2 +1,3 @@
-# fimilestones
-FI Milestones calculator
+# FI Crunch
+
+Financial Independence Calculator
