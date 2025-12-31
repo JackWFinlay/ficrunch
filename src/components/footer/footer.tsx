@@ -67,8 +67,9 @@ export default function Footer() {
           <p className="text-center text-xs text-foreground">
             <span className="font-bold">PRIVACY:</span> No identifying data ever
             leaves this browser. Any first-party data stored on your device is
-            for theme and locale preferences only. Third-party data, including
-            cookies, is for advertising and metrics purposes only.
+            for calculator state, and theme and locale preferences only.
+            Third-party data, including cookies, is for advertising and metrics
+            purposes only.
           </p>
         </div>
         <div className="flex justify-center">
