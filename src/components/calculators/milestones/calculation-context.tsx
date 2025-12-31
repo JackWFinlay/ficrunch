@@ -1,8 +1,24 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import { Calculator, Frequency } from "@/models/enums"
-import type { CalculationInput } from "@/components/calculators/milestones/calculationInput"
+import { Frequency } from "@/models/enums"
 
-export const defaultCalculationInput = {
+export type CalculationInput = {
+  age: number
+  retirementAge: number
+  startingAmount: number
+  startingAmountDisplay: string
+  target: number
+  targetDisplay: string
+  contribution: number
+  contributionDisplay: string
+  frequency: string
+  rate: number
+  rateDisplay: string
+  inflation: boolean
+  inflationRate: number
+  inflationRateDisplay: string
+}
+
+const defaultCalculationInput = {
   age: 30,
   retirementAge: 65,
   startingAmount: 0,

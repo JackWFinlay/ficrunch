@@ -1,5 +1,5 @@
 import { getNumberOfPeriods, fv, nper, round } from "@/lib/utils"
-import type { CalculationInput } from "@/components/calculators/milestones/calculationInput"
+import type { CalculationInput } from "@/components/calculators/milestones/calculation-context"
 import { Milestone } from "@/models/enums"
 import type { ChartData, TableData } from "@/models/resultsData"
 

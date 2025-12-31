@@ -11,7 +11,7 @@ export type DebtCalculationInput = {
   frequency: string
 }
 
-export const defaultCalculationInput = {
+const defaultCalculationInput = {
   startingAmount: 10000,
   startingAmountDisplay: "10000",
   contribution: 1000,
