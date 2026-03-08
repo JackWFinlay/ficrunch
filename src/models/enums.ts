@@ -5,18 +5,16 @@ export const Frequency = {
   Annual: "Annual",
 }
 
-export const Milestone = {
-  AboveContributions: "📈 Annual Return > Annual Contributions",
-  AboveSalary: "Returns per year greater than salary",
-  AboveLifetimeContributions: "💸 Total Return > Total Contributions",
-  AboveTarget: "🎯 Target",
-  HalfWayToTarget: "🤏 Half-way to Target",
-  RetirementTotal: "👴 Retirement",
-  CoastFire: "🏝️ Coast FIRE",
+export const DividendFrequency = {
+  Annual: "Annual",
+  Semiannual: "Semiannual",
+  Quarterly: "Quarterly",
+  Monthly: "Monthly",
 }
 
 export const Calculator = {
   Milestones: "Milestones",
   //CoastFire: "Coast Fire",
   DebtPayOff: "Debt Pay Off",
+  Dividend: "Dividend",
 }

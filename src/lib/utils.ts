@@ -118,7 +118,7 @@ export function nper(
   contribution: number,
   target: number,
   starting: number,
-  n: number
+  n: number,
 ) {
   const percentage = rate / 100 / n
   return (
@@ -134,7 +134,7 @@ export function fv(
   rate: number,
   contribution: number,
   n: number,
-  periods: number
+  periods: number,
 ) {
   const percentage = rate / 100 / n
   return (

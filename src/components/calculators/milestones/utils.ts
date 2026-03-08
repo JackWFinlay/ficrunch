@@ -1,6 +1,6 @@
 import { getNumberOfPeriods, fv, nper, round } from "@/lib/utils"
 import type { CalculationInput } from "@/components/calculators/milestones/calculation-context"
-import { Milestone } from "@/models/enums"
+import { Milestone } from "@/components/calculators/milestones/models"
 import type { ChartData, TableData } from "@/models/resultsData"
 
 export function createTableData(calculationInput: CalculationInput) {
