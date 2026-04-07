@@ -45,7 +45,7 @@ export default function Form() {
 
     const startingAmountDisplay = toLocaleFloat(
       startingAmount.toString(),
-      locale
+      locale,
     )
     const targetDisplay = toLocaleFloat(target.toString(), locale)
     const contributionDisplay = toLocaleFloat(contribution.toString(), locale)

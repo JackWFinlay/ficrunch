@@ -4,8 +4,10 @@ import DebtCalculator from "./debt-pay-off/debt-calculator"
 import { useCalculatorContext } from "../calculator-selector/calculator-context"
 import { DebtCalculationContextProvider } from "./debt-pay-off/debt-calculation-context"
 import { CalculationContextProvider } from "./milestones/calculation-context"
-import DividendCalculator from "./dividend-growth/dividend-calculator"
-import { DividendContextProvider } from "./dividend-growth/dividend-context"
+import { BudgetContextProvider } from "./budget-planner/budget-context"
+import BudgetPlanner from "./budget-planner/budget-planner"
+// import DividendCalculator from "./dividend-growth/dividend-calculator"
+// import { DividendContextProvider } from "./dividend-growth/dividend-context"
 
 export default function Calculator() {
   const { calculator } = useCalculatorContext()
@@ -13,11 +15,18 @@ export default function Calculator() {
   let calculatorClass = null
 
   switch (calculator) {
-    case CalculatorType.Dividend:
+    // case CalculatorType.Dividend:
+    //   calculatorClass = (
+    //     <DividendContextProvider>
+    //       <DividendCalculator />
+    //     </DividendContextProvider>
+    //   )
+    //   break
+    case CalculatorType.BudgetPlanner:
       calculatorClass = (
-        <DividendContextProvider>
-          <DividendCalculator />
-        </DividendContextProvider>
+        <BudgetContextProvider>
+          <BudgetPlanner />
+        </BudgetContextProvider>
       )
       break
     case CalculatorType.DebtPayOff:

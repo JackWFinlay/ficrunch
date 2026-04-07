@@ -17,4 +17,5 @@ export const Calculator = {
   //CoastFire: "Coast Fire",
   DebtPayOff: "Debt Pay Off",
   Dividend: "Dividend",
+  BudgetPlanner: "Budget Planner",
 }

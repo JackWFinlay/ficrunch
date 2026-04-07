@@ -65,11 +65,11 @@ export function CalculationContextProvider({
     () =>
       JSON.parse(
         localStorage.getItem(storageKey) ??
-          JSON.stringify(defaultCalculationInput)
-      )
+          JSON.stringify(defaultCalculationInput),
+      ),
   )
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
-    undefined
+    undefined,
   )
 
   useEffect(() => {}, [calculationInput])
@@ -96,7 +96,7 @@ export const useCalculationContext = () => {
 
   if (context === undefined)
     throw new Error(
-      "useCalculationContext must be used within a CalculationContextProvider"
+      "useCalculationContext must be used within a CalculationContextProvider",
     )
 
   return context
