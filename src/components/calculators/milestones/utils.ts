@@ -1,77 +1,77 @@
-import { getNumberOfPeriods, fv, nper, round } from "@/lib/utils"
-import type { CalculationInput } from "@/components/calculators/milestones/calculation-context"
-import { Milestone } from "@/components/calculators/milestones/models"
-import type { ChartData, TableData } from "@/models/resultsData"
+import { getNumberOfPeriods, fv, nper, round } from '@/lib/utils';
+import type { MilestoneCalculationInput } from '@/components/calculators/milestones/calculation-context';
+import { Milestone } from '@/components/calculators/milestones/models';
+import type { ChartData, TableData } from '@/models/resultsData';
 
-export function createTableData(calculationInput: CalculationInput) {
-  const { age, frequency, retirementAge, inflation } = calculationInput
+export function createTableData(calculationInput: MilestoneCalculationInput) {
+  const { age, frequency, retirementAge, inflation } = calculationInput;
 
-  const currentYear = new Date().getUTCFullYear()
-  const years = retirementAge - age
+  const currentYear = new Date().getUTCFullYear();
+  const years = retirementAge - age;
   const { startingAmount, contribution, target, inflationRate } =
-    calculationInput
-  let { rate } = calculationInput
+    calculationInput;
+  let { rate } = calculationInput;
 
-  rate = inflation ? rate - inflationRate : rate
+  rate = inflation ? rate - inflationRate : rate;
 
-  const n = getNumberOfPeriods(frequency)
+  const n = getNumberOfPeriods(frequency);
 
   // let coastFireReachedIndex: number | undefined = undefined
   // let coastFireReachedValue: number | undefined = undefined
   // let coastFireReachedTime: number | undefined = undefined
 
-  let aboveContributionsIndex: number | undefined = undefined
-  let aboveContributionsValue: number | undefined = undefined
-  let aboveContributionsTime: number | undefined = undefined
+  let aboveContributionsIndex: number | undefined = undefined;
+  let aboveContributionsValue: number | undefined = undefined;
+  let aboveContributionsTime: number | undefined = undefined;
   let returnsGreaterThanLifetimeContributionsIndex: number | undefined =
-    undefined
+    undefined;
   let returnsGreaterThanLifetimeContributionsValue: number | undefined =
-    undefined
+    undefined;
   let returnsGreaterThanLifetimeContributionsTime: number | undefined =
-    undefined
+    undefined;
 
-  let retirementTotal = 0
-  let totalInterest = 0
+  let retirementTotal = 0;
+  let totalInterest = 0;
 
   let chartData: ChartData[] = Array.from({ length: years }).map(
     (_, index: number) => {
-      const contributions = startingAmount + contribution * (index + 1) * n
+      const contributions = startingAmount + contribution * (index + 1) * n;
 
-      const total = fv(index, startingAmount, rate, contribution, n, n)
+      const total = fv(index, startingAmount, rate, contribution, n, n);
 
-      const interest = total - contributions
+      const interest = total - contributions;
 
-      const interestForYear = interest - totalInterest
+      const interestForYear = interest - totalInterest;
 
-      const aboveContributions = interestForYear > contribution * n
+      const aboveContributions = interestForYear > contribution * n;
 
       if (aboveContributions && !aboveContributionsIndex) {
-        aboveContributionsIndex = index
-        aboveContributionsValue = total
+        aboveContributionsIndex = index;
+        aboveContributionsValue = total;
         aboveContributionsTime = round(
-          nper(rate, contribution, total, startingAmount, n) / n
-        )
+          nper(rate, contribution, total, startingAmount, n) / n,
+        );
       }
 
-      totalInterest += interestForYear
+      totalInterest += interestForYear;
 
-      const returnsAboveLifetimeContributions = totalInterest > contributions
+      const returnsAboveLifetimeContributions = totalInterest > contributions;
 
       if (
         returnsAboveLifetimeContributions &&
         !returnsGreaterThanLifetimeContributionsIndex
       ) {
-        returnsGreaterThanLifetimeContributionsIndex = index
-        returnsGreaterThanLifetimeContributionsValue = total
+        returnsGreaterThanLifetimeContributionsIndex = index;
+        returnsGreaterThanLifetimeContributionsValue = total;
         returnsGreaterThanLifetimeContributionsTime = round(
           nper(
             rate,
             contribution,
             contributions * 2 + 0.01,
             startingAmount,
-            n
-          ) / n
-        )
+            n,
+          ) / n,
+        );
       }
 
       // const yearsToRetirement = years - index
@@ -92,7 +92,7 @@ export function createTableData(calculationInput: CalculationInput) {
       // }
 
       if (index >= years - 1) {
-        retirementTotal = total
+        retirementTotal = total;
       }
 
       const result = {
@@ -100,26 +100,26 @@ export function createTableData(calculationInput: CalculationInput) {
         contributions,
         interest,
         total,
-      } as ChartData
+      } as ChartData;
 
-      return result
-    }
-  )
+      return result;
+    },
+  );
 
-  const targetTime = nper(rate, contribution, target, startingAmount, n)
+  const targetTime = nper(rate, contribution, target, startingAmount, n);
 
-  const targetTimeRounded = round(targetTime / n)
+  const targetTimeRounded = round(targetTime / n);
 
-  const halfwayTime = targetTime / 2 / n
+  const halfwayTime = targetTime / 2 / n;
 
   const halfwayValue = round(
-    fv(halfwayTime - 1, startingAmount, rate, contribution, n, n)
-  )
+    fv(halfwayTime - 1, startingAmount, rate, contribution, n, n),
+  );
 
   const clampIndex = (index: number) => {
-    const floor = (Math as any).floor(index)
-    return floor > years ? years - 1 : floor
-  }
+    const floor = (Math as any).floor(index);
+    return floor > years ? years - 1 : floor;
+  };
 
   const tableData: TableData[] = [
     {
@@ -150,7 +150,7 @@ export function createTableData(calculationInput: CalculationInput) {
     //   time: coastFireReachedTime ?? 0,
     //   amount: coastFireReachedValue ?? 0,
     // },
-  ]
+  ];
 
   if (aboveContributionsIndex) {
     tableData.push({
@@ -159,7 +159,7 @@ export function createTableData(calculationInput: CalculationInput) {
       year: (aboveContributionsIndex ?? 0) + currentYear,
       time: aboveContributionsTime ?? 0,
       amount: aboveContributionsValue ?? 0,
-    })
+    });
   }
 
   if (returnsGreaterThanLifetimeContributionsIndex) {
@@ -169,8 +169,8 @@ export function createTableData(calculationInput: CalculationInput) {
       year: (returnsGreaterThanLifetimeContributionsIndex ?? 0) + currentYear,
       time: returnsGreaterThanLifetimeContributionsTime ?? 0,
       amount: returnsGreaterThanLifetimeContributionsValue ?? 0,
-    })
+    });
   }
 
-  return { tableData, chartData }
+  return { tableData, chartData };
 }
